@@ -28,20 +28,42 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
-const app = initializeApp(firebaseConfig);
+export const isMockMode =
+  !import.meta.env.VITE_FIREBASE_API_KEY ||
+  import.meta.env.VITE_FIREBASE_API_KEY === 'your_api_key_here' ||
+  import.meta.env.VITE_FIREBASE_API_KEY.startsWith('your_') ||
+  import.meta.env.VITE_FIREBASE_API_KEY.includes('placeholder');
 
-export const auth = getAuth(app);
-export const db = getFirestore(app);
-export const storage = getStorage(app);
+let app: any;
+let auth: any;
+let db: any;
+let storage: any;
 
-// Set session persistence to local (survives browser restarts)
-setPersistence(auth, browserLocalPersistence).catch(console.error);
+if (!isMockMode) {
+  try {
+    app = initializeApp(firebaseConfig);
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+    setPersistence(auth, browserLocalPersistence).catch(console.error);
+  } catch (err) {
+    console.error('Firebase failed to initialize, switching to Mock Mode:', err);
+  }
+}
+
+export { auth, db, storage };
 
 // Auth helpers
 export async function signInAdmin(
   email: string,
   password: string
 ): Promise<User> {
+  if (isMockMode || !auth) {
+    if (email === 'tazga@tazga.com' && password === 'TAZGA2025') {
+      return { email, uid: 'mock-admin-uid' } as User;
+    }
+    throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+  }
   const result = await signInWithEmailAndPassword(auth, email, password);
   return result.user;
 }
@@ -50,15 +72,24 @@ export async function createAdminUser(
   email: string,
   password: string
 ): Promise<User> {
+  if (isMockMode || !auth) {
+    return { email, uid: 'mock-admin-uid' } as User;
+  }
   const result = await createUserWithEmailAndPassword(auth, email, password);
   return result.user;
 }
 
 export async function logOut(): Promise<void> {
+  if (isMockMode || !auth) return;
   return signOut(auth);
 }
 
 export function onAuthChange(callback: (user: User | null) => void) {
+  if (isMockMode || !auth) {
+    const mockUser = localStorage.getItem('tazga_mock_user');
+    callback(mockUser ? JSON.parse(mockUser) : null);
+    return () => {};
+  }
   return onAuthStateChanged(auth, callback);
 }
 
@@ -67,6 +98,14 @@ export async function uploadImageToStorage(
   file: File,
   path: string
 ): Promise<string> {
+  if (isMockMode || !storage) {
+    // Return base64 for preview locally
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.readAsDataURL(file);
+    });
+  }
   const storageRef = ref(storage, path);
   const snapshot = await uploadBytes(storageRef, file);
   return getDownloadURL(snapshot.ref);
@@ -75,6 +114,7 @@ export async function uploadImageToStorage(
 export async function deleteImageFromStorage(
   storagePath: string
 ): Promise<void> {
+  if (isMockMode || !storage) return;
   try {
     const storageRef = ref(storage, storagePath);
     await deleteObject(storageRef);

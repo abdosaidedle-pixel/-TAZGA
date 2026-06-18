@@ -7,7 +7,7 @@ import {
 } from 'react';
 import { type User } from 'firebase/auth';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db, signInAdmin, createAdminUser, logOut, onAuthChange } from './firebase';
+import { auth, db, signInAdmin, createAdminUser, logOut, onAuthChange, isMockMode } from './firebase';
 
 interface AuthContextType {
   user: User | null;
@@ -30,6 +30,9 @@ const AuthContext = createContext<AuthContextType>({
 });
 
 async function checkIsAdmin(user: User): Promise<boolean> {
+  if (isMockMode) {
+    return user.email === 'tazga@tazga.com';
+  }
   try {
     const settingsDoc = await getDoc(doc(db, 'settings', 'admins'));
     if (!settingsDoc.exists()) return false;
@@ -70,6 +73,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await logOut();
         throw new Error('هذا الحساب غير مصرح له بالوصول للوحة التحكم');
       }
+      if (isMockMode) {
+        localStorage.setItem('tazga_mock_user', JSON.stringify(u));
+      }
+      setUser(u);
       setIsAdmin(true);
     } catch (err: unknown) {
       const message =
@@ -90,13 +97,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const setupFirstAdmin = async (email: string, password: string) => {
     setAuthError(null);
     try {
-      // Create user in Firebase Auth
       const u = await createAdminUser(email, password);
-      // Add to admins whitelist in Firestore
-      const { doc, setDoc } = await import('firebase/firestore');
-      await setDoc(doc(db, 'settings', 'admins'), {
-        emails: [u.email],
-      });
+      if (isMockMode) {
+        localStorage.setItem('tazga_mock_user', JSON.stringify(u));
+        localStorage.setItem('tazga_mock_first_setup', 'done');
+      } else {
+        const { doc, setDoc } = await import('firebase/firestore');
+        await setDoc(doc(db, 'settings', 'admins'), {
+          emails: [u.email],
+        });
+      }
+      setUser(u);
       setIsAdmin(true);
     } catch (err: unknown) {
       const message =
@@ -107,8 +118,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signOutUser = async () => {
-    await logOut();
-    setIsAdmin(false);
+    if (isMockMode) {
+      localStorage.removeItem('tazga_mock_user');
+      setUser(null);
+      setIsAdmin(false);
+    } else {
+      await logOut();
+      setIsAdmin(false);
+    }
   };
 
   return (
