@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/"
+title = "TAZGA Jewelry"
+version = "1.0.0"
+id = "artifacts/tazga-jewelry"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 26170
+
+[services.development]
+run = "pnpm --filter @workspace/tazga-jewelry run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/tazga-jewelry", "run", "build" ]
+publicDir = "artifacts/tazga-jewelry/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "26170"
+BASE_PATH = "/"

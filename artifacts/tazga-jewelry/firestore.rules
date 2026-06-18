@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper: check if request is from authenticated user
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Public read access for store content
+    match /products/{productId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /categories/{categoryId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /collections/{collectionId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /banners/{bannerId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    match /media/{mediaId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+
+    // Settings: public read, auth write
+    match /settings/{settingId} {
+      allow read: if true;
+      allow write: if isAuthenticated();
+    }
+  }
+}

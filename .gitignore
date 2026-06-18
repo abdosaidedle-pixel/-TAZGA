@@ -1,0 +1,34 @@
+# Dependency directories
+node_modules/
+.pnpm-store/
+artifacts/tazga-jewelry/node_modules/
+
+# Local env files
+.env
+.env.local
+.env.production
+.env.*.local
+artifacts/tazga-jewelry/.env
+artifacts/tazga-jewelry/.env.local
+artifacts/tazga-jewelry/.env.production
+
+# Build outputs
+dist/
+build/
+artifacts/tazga-jewelry/dist/
+.tsbuildinfo
+artifacts/tazga-jewelry/.tsbuildinfo
+
+# IDE/Editor configurations
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini

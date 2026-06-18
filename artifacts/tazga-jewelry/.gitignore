@@ -1,0 +1,38 @@
+# ==============================
+# TAZGA Jewelry - .gitignore
+# ==============================
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment Variables (NEVER commit these)
+.env
+.env.local
+.env.production
+
+# Build output
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Firebase
+.firebase/
+firebase-debug.log
+
+# TypeScript
+*.tsbuildinfo
