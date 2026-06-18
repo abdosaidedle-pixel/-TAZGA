@@ -7,6 +7,7 @@ import { ProtectedRoute } from '@/components/admin/protected-route';
 import NotFound from '@/pages/not-found';
 import { StoreLayout } from '@/components/layout/store-layout';
 import { AdminLayout } from '@/components/layout/admin-layout';
+import { LanguageProvider } from '@/lib/language-context';
 
 import Home from '@/pages/home';
 import Shop from '@/pages/shop';
@@ -29,6 +30,7 @@ import AdminBanners from '@/pages/admin/banners';
 import AdminMedia from '@/pages/admin/media';
 import AdminWebsiteContent from '@/pages/admin/website-content';
 import AdminSettings from '@/pages/admin/settings';
+import AdminInstagramBanner from '@/pages/admin/instagram-banner';
 
 import { CartProvider } from '@/lib/cart-context';
 
@@ -49,6 +51,7 @@ function AdminRouter() {
           <Route path="/admin/media" component={AdminMedia} />
           <Route path="/admin/content" component={AdminWebsiteContent} />
           <Route path="/admin/settings" component={AdminSettings} />
+          <Route path="/admin/instagram-banner" component={AdminInstagramBanner} />
           <Route component={NotFound} />
         </Switch>
       </AdminLayout>
@@ -87,14 +90,16 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <CartProvider>
-          <TooltipProvider>
-            <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-              <Router />
-            </WouterRouter>
-            <Toaster />
-          </TooltipProvider>
-        </CartProvider>
+        <LanguageProvider>
+          <CartProvider>
+            <TooltipProvider>
+              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+                <Router />
+              </WouterRouter>
+              <Toaster />
+            </TooltipProvider>
+          </CartProvider>
+        </LanguageProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

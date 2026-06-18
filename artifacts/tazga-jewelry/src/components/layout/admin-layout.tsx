@@ -15,6 +15,7 @@ import {
   Sun,
   Moon,
   ChevronLeft,
+  Instagram,
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -26,6 +27,7 @@ const navItems = [
   { name: 'المجموعات', href: '/admin/collections', icon: Layers },
   { name: 'الفئات', href: '/admin/categories', icon: Tag },
   { name: 'البنرات', href: '/admin/banners', icon: Megaphone },
+  { name: 'بنر إنستاجرام', href: '/admin/instagram-banner', icon: Instagram },
   { name: 'محتوى الموقع', href: '/admin/content', icon: FileText },
   { name: 'مكتبة الوسائط', href: '/admin/media', icon: ImageIcon },
   { name: 'الإعدادات', href: '/admin/settings', icon: Settings },

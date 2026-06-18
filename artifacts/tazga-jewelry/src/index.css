@@ -253,4 +253,84 @@
   .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
     inset: -1px;
   }
+
+  /* ─── Scrollbar hide utility ─────────────────────────────────── */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* ─── Jewelry pattern background ─────────────────────────────── */
+  .jewelry-bg {
+    position: relative;
+    isolation: isolate;
+  }
+  .jewelry-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='0.04'%3E%3Cpath d='M50 5L60 25L80 30L65 45L68 65L50 56L32 65L35 45L20 30L40 25z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 100px 100px;
+  }
+}
+
+/* ─── Responsive Media Queries ──────────────────────────────────── */
+
+/* Extra small phones */
+@media (max-width: 480px) {
+  h1 { font-size: 2.25rem !important; line-height: 1.15 !important; }
+  h2 { font-size: 1.5rem !important; }
+  h3 { font-size: 1.125rem !important; }
+
+  .container { padding-left: 1rem !important; padding-right: 1rem !important; }
+
+  /* Fix hero on tiny screens */
+  section.relative.min-h-\[100dvh\] {
+    min-height: 100svh;
+  }
+}
+
+/* Small phones */
+@media (max-width: 640px) {
+  /* Footer columns stack */
+  footer .grid { gap: 1.5rem !important; }
+
+  /* Tighter section padding */
+  .py-24 { padding-top: 4rem !important; padding-bottom: 4rem !important; }
+  .py-32 { padding-top: 4.5rem !important; padding-bottom: 4.5rem !important; }
+
+  /* Collection grid: 2 columns on small */
+  .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+
+/* Tablets */
+@media (min-width: 641px) and (max-width: 1023px) {
+  h1 { font-size: 3.5rem !important; }
+  h2 { font-size: 2rem !important; }
+}
+
+/* Touch devices: remove hover transforms that can stick */
+@media (hover: none) {
+  .group:hover .group-hover\:scale-110 { transform: none !important; }
+  .group:hover .group-hover\:opacity-100 { opacity: inherit !important; }
+}
+
+/* High contrast / accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Print styles */
+@media print {
+  header, footer, .fixed { display: none !important; }
+  body { background: white !important; color: black !important; }
 }
