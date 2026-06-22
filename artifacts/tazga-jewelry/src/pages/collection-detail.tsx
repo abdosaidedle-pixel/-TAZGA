@@ -7,6 +7,7 @@ import { collectionsService } from "@/lib/services/collections.service";
 import { productsService } from "@/lib/services/products.service";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-context";
 import type { Collection, Product } from "@/lib/types";
 
 export default function CollectionDetail() {
@@ -16,7 +17,8 @@ export default function CollectionDetail() {
   const [loading, setLoading] = useState(true);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const { toast } = useToast();
-  
+  const { t, dir } = useLanguage();
+
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
 
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function CollectionDetail() {
         const col = await collectionsService.getBySlug(slug);
         setCollection(col);
         setLoading(false);
-        
+
         if (col) {
           const prods = await productsService.getAll({ collectionId: col.id });
           setProducts(prods);
@@ -46,7 +48,7 @@ export default function CollectionDetail() {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product, 1);
-    toast({ title: "Added to Bag", description: `${product.name} has been added to your shopping bag.` });
+    toast({ title: t("product.added_to_cart"), description: `${product.name} ${t("product.added_to_cart_desc")}` });
   };
 
   const handleToggleWishlist = (product: Product, e: React.MouseEvent) => {
@@ -54,10 +56,10 @@ export default function CollectionDetail() {
     e.stopPropagation();
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
-      toast({ title: "Removed from Wishlist" });
+      toast({ title: t("product.removed_from_wishlist") });
     } else {
       addToWishlist(product);
-      toast({ title: "Added to Wishlist" });
+      toast({ title: t("product.added_to_wishlist") });
     }
   };
 
@@ -76,15 +78,15 @@ export default function CollectionDetail() {
 
   if (!collection) {
     return (
-      <div className="min-h-screen pt-32 pb-20 text-center">
-        <h1 className="text-3xl font-serif mb-4">Collection Not Found</h1>
-        <Link href="/collections" className="text-primary hover:underline">Return to Collections</Link>
+      <div className="min-h-screen pt-32 pb-20 text-center" dir={dir}>
+        <h1 className="text-3xl font-serif mb-4">{t("collections.not_found")}</h1>
+        <Link href="/collections" className="text-primary hover:underline">{t("collections.return")}</Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen pb-20">
+    <div className="min-h-screen pb-20" dir={dir}>
       {/* Banner */}
       <div className="relative h-[40vh] md:h-[50vh] flex items-center justify-center overflow-hidden border-b border-white/5">
         <div className="absolute inset-0">
@@ -108,16 +110,16 @@ export default function CollectionDetail() {
       </div>
 
       <div className="container mx-auto px-4 md:px-8 pt-12">
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-12 flex-wrap gap-4">
           <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider font-serif">
-            <Link href="/" className="hover:text-primary transition-colors">Home</Link>
-            <ChevronRight className="h-3 w-3" />
-            <Link href="/collections" className="hover:text-primary transition-colors">Collections</Link>
-            <ChevronRight className="h-3 w-3" />
+            <Link href="/" className="hover:text-primary transition-colors">{t("product.breadcrumb_home")}</Link>
+            <ChevronRight className="h-3 w-3 rtl-flip-x" />
+            <Link href="/collections" className="hover:text-primary transition-colors">{t("nav.collections")}</Link>
+            <ChevronRight className="h-3 w-3 rtl-flip-x" />
             <span className="text-foreground">{collection.name}</span>
           </div>
           <div className="text-sm text-muted-foreground font-serif">
-            {products.length} Pieces
+            {products.length} {t("collections.pieces_count")}
           </div>
         </div>
 
@@ -128,7 +130,7 @@ export default function CollectionDetail() {
         ) : products.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
             {products.map((product, index) => (
-              <motion.div 
+              <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -137,31 +139,32 @@ export default function CollectionDetail() {
               >
                 <Link href={`/shop/${product.slug}`} className="relative aspect-[3/4] overflow-hidden bg-secondary mb-4 block border border-white/5">
                   {product.images && product.images[0] ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name} 
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">{t("shop.no_image")}</div>
                   )}
-                  
+
                   {/* Hover Actions */}
                   <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-background/90 to-transparent flex justify-center gap-4">
-                    <button 
+                    <button
                       onClick={(e) => handleToggleWishlist(product, e)}
                       className={`h-10 w-10 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all ${
                         isInWishlist(product.id) ? "text-primary" : ""
                       }`}
+                      aria-label={t("product.added_to_wishlist")}
                     >
                       <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? "fill-primary" : ""}`} />
                     </button>
-                    <button 
+                    <button
                       onClick={(e) => handleAddToCart(product, e)}
                       className="h-10 px-6 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all gap-2 text-sm font-medium tracking-wide font-serif"
                     >
                       <ShoppingBag className="h-4 w-4" />
-                      ADD
+                      {t("home.product.add")}
                     </button>
                   </div>
                 </Link>
@@ -181,7 +184,7 @@ export default function CollectionDetail() {
           </div>
         ) : (
           <div className="py-20 text-center text-muted-foreground border border-white/10 font-arabic">
-            لا تتوفر أي منتجات في هذه المجموعة حالياً.
+            {t("collections.empty_products")}
           </div>
         )}
       </div>

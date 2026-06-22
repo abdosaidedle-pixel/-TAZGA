@@ -95,6 +95,9 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THEME: ULTRA DARK (default) — #050505 background
+   ════════════════════════════════════════════════════════════════ */
 :root, .dark {
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
@@ -141,7 +144,7 @@
   --app-font-serif: 'Playfair Display', serif;
   --app-font-mono: Menlo, monospace;
   --app-font-arabic: 'Amiri', serif;
-  
+
   --radius: 0;
 
   --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0, 0.5);
@@ -152,7 +155,7 @@
   --shadow-lg: 0px 2px 0px 0px rgba(0,0,0, 0.5), 0px 4px 6px -1px rgba(0,0,0, 0.5);
   --shadow-xl: 0px 2px 0px 0px rgba(0,0,0, 0.5), 0px 8px 10px -1px rgba(0,0,0, 0.5);
   --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0, 0.5);
-  
+
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
@@ -170,6 +173,72 @@
   --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
   --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   THEME: LIGHT DARK — softer dark warm beige-tinted (#1a1612)
+   Easier on the eyes while preserving the luxury rose-gold feel
+   ════════════════════════════════════════════════════════════════ */
+.light-dark {
+  --button-outline: rgba(255,255,255, .14);
+  --badge-outline: rgba(255,255,255, .07);
+  --opaque-button-border-intensity: 6;
+  --elevate-1: rgba(255,255,255, .06);
+  --elevate-2: rgba(255,255,255, .12);
+
+  /* Warm dark brown — easier than pure black */
+  --background: 28 12% 10%;
+  --foreground: 35 30% 95%;
+  --border: 28 10% 22%;
+  --card: 28 12% 13%;
+  --card-foreground: 35 30% 95%;
+  --card-border: 28 10% 22%;
+  --sidebar: 28 12% 13%;
+  --sidebar-foreground: 35 25% 88%;
+  --sidebar-border: 28 10% 22%;
+  --sidebar-primary: 28 45% 65%;
+  --sidebar-primary-foreground: 28 12% 10%;
+  --sidebar-accent: 28 10% 22%;
+  --sidebar-accent-foreground: 35 30% 95%;
+  --sidebar-ring: 28 45% 65%;
+  --popover: 28 12% 13%;
+  --popover-foreground: 35 30% 95%;
+  --popover-border: 28 10% 22%;
+
+  /* Brighter rose gold for contrast against the warmer background */
+  --primary: 28 50% 65%;
+  --primary-foreground: 28 12% 10%;
+  --secondary: 28 10% 18%;
+  --secondary-foreground: 35 30% 95%;
+  --muted: 28 10% 22%;
+  --muted-foreground: 30 15% 78%;
+  --accent: 32 55% 55%;
+  --accent-foreground: 35 30% 95%;
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 35 30% 95%;
+  --input: 28 10% 24%;
+  --ring: 28 50% 65%;
+  --chart-1: 28 50% 65%;
+  --chart-2: 32 55% 55%;
+  --chart-3: 35 20% 80%;
+  --chart-4: 35 15% 65%;
+  --chart-5: 35 10% 45%;
+
+  --shadow-2xs: 0px 2px 0px 0px rgba(0,0,0, 0.4);
+  --shadow-xs: 0px 2px 0px 0px rgba(0,0,0, 0.4);
+  --shadow-sm: 0px 2px 0px 0px rgba(0,0,0, 0.4), 0px 1px 2px -1px rgba(0,0,0, 0.4);
+  --shadow: 0px 2px 0px 0px rgba(0,0,0, 0.4), 0px 1px 2px -1px rgba(0,0,0, 0.4);
+  --shadow-md: 0px 2px 0px 0px rgba(0,0,0, 0.4), 0px 2px 4px -1px rgba(0,0,0, 0.4);
+  --shadow-lg: 0px 2px 0px 0px rgba(0,0,0, 0.4), 0px 4px 6px -1px rgba(0,0,0, 0.4);
+  --shadow-xl: 0px 2px 0px 0px rgba(0,0,0, 0.4), 0px 8px 10px -1px rgba(0,0,0, 0.4);
+  --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0, 0.4);
+}
+
+/* Make sure body uses the active theme background */
+body {
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 @layer base {
@@ -279,9 +348,66 @@
   }
 }
 
-/* ─── Responsive Media Queries ──────────────────────────────────── */
+/* ════════════════════════════════════════════════════════════════
+   RTL SUPPORT — flips arrows and directional utilities for Arabic
+   ════════════════════════════════════════════════════════════════ */
+[dir="rtl"] .flip-rtl { transform: scaleX(-1); }
 
-/* Extra small phones */
+[dir="rtl"] .rtl-flip-x {
+  transform: scaleX(-1);
+}
+
+/* In RTL, group-hover translate-x should go the other way */
+[dir="rtl"] .group:hover .group-hover\:translate-x-1 {
+  transform: translateX(-0.25rem) !important;
+}
+
+/* Theme toggle button — animated icon */
+.theme-toggle-track {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  height: 1.5rem;
+  width: 2.75rem;
+  border-radius: 9999px;
+  border: 1px solid hsl(var(--border));
+  background-color: hsl(var(--secondary));
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-thumb {
+  position: absolute;
+  top: 50%;
+  height: 1.1rem;
+  width: 1.1rem;
+  border-radius: 9999px;
+  background-color: hsl(var(--primary));
+  transform: translateY(-50%);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--primary-foreground));
+}
+
+[dir="ltr"] .theme-toggle-thumb { left: 0.15rem; }
+[dir="ltr"] .theme-toggle-thumb.is-active { left: calc(100% - 1.25rem); }
+[dir="rtl"] .theme-toggle-thumb { right: 0.15rem; }
+[dir="rtl"] .theme-toggle-thumb.is-active { right: calc(100% - 1.25rem); }
+
+/* Social icons hover */
+.social-icon {
+  transition: transform 0.3s ease, color 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+}
+.social-icon:hover {
+  transform: translateY(-3px);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE MEDIA QUERIES — refined for jewelry store
+   ════════════════════════════════════════════════════════════════ */
+
+/* Extra small phones (≤ 480px) */
 @media (max-width: 480px) {
   h1 { font-size: 2.25rem !important; line-height: 1.15 !important; }
   h2 { font-size: 1.5rem !important; }
@@ -293,9 +419,12 @@
   section.relative.min-h-\[100dvh\] {
     min-height: 100svh;
   }
+
+  /* Trust bar wrap nicer */
+  .trust-bar-item { min-width: 70px !important; }
 }
 
-/* Small phones */
+/* Small phones (≤ 640px) */
 @media (max-width: 640px) {
   /* Footer columns stack */
   footer .grid { gap: 1.5rem !important; }
@@ -306,9 +435,15 @@
 
   /* Collection grid: 2 columns on small */
   .grid-cols-5 { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+
+  /* Cart/Wishlist item image smaller */
+  .cart-item-image { width: 5rem !important; }
+
+  /* Checkout summary sticky no longer sticky on mobile */
+  .checkout-summary { position: static !important; }
 }
 
-/* Tablets */
+/* Tablets (641px – 1023px) */
 @media (min-width: 641px) and (max-width: 1023px) {
   h1 { font-size: 3.5rem !important; }
   h2 { font-size: 2rem !important; }
@@ -318,6 +453,7 @@
 @media (hover: none) {
   .group:hover .group-hover\:scale-110 { transform: none !important; }
   .group:hover .group-hover\:opacity-100 { opacity: inherit !important; }
+  .group:hover .group-hover\:translate-y-0 { transform: none !important; }
 }
 
 /* High contrast / accessibility */

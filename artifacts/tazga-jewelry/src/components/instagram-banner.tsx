@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Instagram, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
 import { db } from "@/lib/firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { useLanguage } from "@/lib/language-context";
 
 interface InstagramSlide {
   url: string;
@@ -24,6 +25,7 @@ export function InstagramBanner() {
   const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [intervalMs, setIntervalMs] = useState(3500);
+  const { t, dir } = useLanguage();
 
   // Listen to Firestore for admin-controlled banner images
   useEffect(() => {
@@ -83,7 +85,7 @@ export function InstagramBanner() {
             </span>
           </a>
           <p className="text-muted-foreground text-sm font-serif tracking-widest uppercase mt-1">
-            Follow us on Instagram
+            {t("instagram.follow_cta")}
           </p>
           <div className="w-12 h-[1px] bg-primary mx-auto mt-4" />
         </motion.div>
@@ -128,16 +130,16 @@ export function InstagramBanner() {
           <button
             onClick={prev}
             className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:border-primary hover:text-primary transition-all"
-            aria-label="Previous"
+            aria-label={t("instagram.prev")}
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5 rtl-flip-x" />
           </button>
           <button
             onClick={next}
             className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:border-primary hover:text-primary transition-all"
-            aria-label="Next"
+            aria-label={t("instagram.next")}
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-5 w-5 rtl-flip-x" />
           </button>
 
           {/* Pause/Play */}

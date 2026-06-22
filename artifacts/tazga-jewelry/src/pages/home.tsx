@@ -61,10 +61,10 @@ export default function Home() {
         email: email.trim().toLowerCase(),
         createdAt: serverTimestamp(),
       });
-      toast({ title: t("تم الاشتراك بنجاح", "Subscribed successfully"), description: t("مرحباً بك في تازجا.", "Welcome to TAZGA.") });
+      toast({ title: t("home.newsletter.success_title"), description: t("home.newsletter.success_body") });
       setEmail("");
     } catch (err) {
-      toast({ title: t("فشل الاشتراك", "Subscription Failed"), description: String(err), variant: "destructive" });
+      toast({ title: t("home.newsletter.fail_title"), description: String(err), variant: "destructive" });
     } finally {
       setSubmittingNewsletter(false);
     }
@@ -72,26 +72,26 @@ export default function Home() {
 
   const handleAddToCart = (product: Product) => {
     addToCart(product, 1);
-    toast({ title: t("أضيف إلى الحقيبة", "Added to Bag"), description: `${product.name} ${t("أضيف إلى حقيبتك.", "has been added to your shopping bag.")}` });
+    toast({ title: t("home.product.added_to_cart"), description: `${product.name} ${t("home.product.added_desc")}` });
   };
 
   const handleToggleWishlist = (product: Product) => {
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
-      toast({ title: t("حُذف من المفضلة", "Removed from Wishlist") });
+      toast({ title: t("home.product.removed_from_wishlist") });
     } else {
       addToWishlist(product);
-      toast({ title: t("أضيف إلى المفضلة", "Added to Wishlist") });
+      toast({ title: t("home.product.added_to_wishlist") });
     }
   };
 
   const trustIndicators = [
-    { icon: Truck, textAr: "شحن سريع", textEn: "Fast Shipping" },
-    { icon: ShieldCheck, textAr: "ضمان الجودة", textEn: "Quality Guarantee" },
-    { icon: Gem, textAr: "صناعة يدوية", textEn: "Handcrafted" },
-    { icon: RefreshCw, textAr: "إرجاع سهل", textEn: "Easy Returns" },
-    { icon: Lock, textAr: "دفع آمن", textEn: "Secure Payment" },
-  ];
+    { icon: Truck, key: "home.trust.fast_shipping" },
+    { icon: ShieldCheck, key: "home.trust.quality_guarantee" },
+    { icon: Gem, key: "home.trust.handcrafted" },
+    { icon: RefreshCw, key: "home.trust.easy_returns" },
+    { icon: Lock, key: "home.trust.secure_payment" },
+  ] as const;
 
   const staticCollections = [
     { name: "Rings", nameAr: "خواتم", coverImage: "/images/category-rings.png", slug: "rings" },
@@ -104,9 +104,9 @@ export default function Home() {
   const displayCollections = dbCollections.length > 0 ? dbCollections : staticCollections;
 
   const reviews = [
-    { id: 1, rating: 5, titleAr: "حرفية رائعة", titleEn: "Incredible Craftsmanship", bodyAr: "التفاصيل على الخاتم الفرعوني رائعة. تحفة فنية حقيقية من الذهب.", bodyEn: "The detail on the pharaonic ring is exquisite. Truly a masterpiece of gold work.", customerName: "Farida K." },
-    { id: 2, rating: 5, titleAr: "أناقة خالصة", titleEn: "Pure Elegance", bodyAr: "شحن سريع، تغليف رائع، والسوار في غاية الجمال.", bodyEn: "Fast shipping, beautiful packaging, and the bracelet is absolutely stunning.", customerName: "Sherif A." },
-    { id: 3, rating: 5, titleAr: "جودة خالدة", titleEn: "Timeless Quality", bodyAr: "مجوهرات تازجا دائماً تحكي قصة. القلادة التراثية أصبحت إمضائي اليومي.", bodyEn: "TAZGA jewelry always tells a story. The heritage necklace has become my daily signature piece.", customerName: "Laila M." },
+    { id: 1, rating: 5, titleKey: "review.1.title", bodyKey: "review.1.body", customerName: "Farida K." },
+    { id: 2, rating: 5, titleKey: "review.2.title", bodyKey: "review.2.body", customerName: "Sherif A." },
+    { id: 3, rating: 5, titleKey: "review.3.title", bodyKey: "review.3.body", customerName: "Laila M." },
   ];
 
   return (
@@ -133,25 +133,25 @@ export default function Home() {
           >
             <div dir="rtl" className="mb-6">
               <h1 className="font-arabic text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight text-white mb-4 drop-shadow-2xl">
-                {homeSettings.heroTitleAr || "حرفية تمتد"} <br />
-                <span className="text-primary italic">{homeSettings.heroSubtitleAr || "عبر الأجيال"}</span>
+                {homeSettings.heroTitleAr || t("home.hero.title_ar")} <br />
+                <span className="text-primary italic">{homeSettings.heroSubtitleAr || t("home.hero.subtitle_ar")}</span>
               </h1>
             </div>
             <p className="font-serif tracking-widest uppercase text-muted-foreground mb-10 text-sm md:text-base border-l border-primary pl-4">
-              {homeSettings.heroTitle || "Craftsmanship Across Generations"}
+              {homeSettings.heroTitle || t("home.hero.title_en")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
                 href={homeSettings.heroButtonLink || "/shop"}
                 className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 md:px-10 py-4 uppercase tracking-[0.2em] text-sm transition-all duration-300 text-center font-serif"
               >
-                {t(homeSettings.heroButtonText || "تسوق الآن", homeSettings.heroButtonText || "Shop Now")}
+                {t("home.hero.cta.shop")}
               </Link>
               <Link
                 href="/collections"
                 className="bg-transparent border border-white/20 hover:border-primary text-white px-8 md:px-10 py-4 uppercase tracking-[0.2em] text-sm transition-all duration-300 text-center font-serif"
               >
-                {t("اكتشف", "Discover")}
+                {t("home.hero.cta.discover")}
               </Link>
             </div>
           </motion.div>
@@ -169,11 +169,11 @@ export default function Home() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.1 }}
-                className="flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors min-w-[80px]"
+                className="trust-bar-item flex flex-col items-center gap-2 text-muted-foreground hover:text-primary transition-colors min-w-[80px]"
               >
                 <indicator.icon className="h-6 w-6 stroke-[1.5]" />
                 <span className="font-arabic text-xs tracking-wide text-center" dir="rtl">
-                  {lang === "ar" ? indicator.textAr : indicator.textEn}
+                  {t(indicator.key)}
                 </span>
               </motion.div>
             ))}
@@ -190,11 +190,11 @@ export default function Home() {
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
             <h2 className="font-serif text-3xl md:text-5xl tracking-[0.1em] mb-4">
-              {t("المجموعات", "THE COLLECTIONS")}
+              {t("home.collections.title")}
             </h2>
             <div className="w-12 h-[1px] bg-primary mx-auto mb-6" />
             <p className="font-arabic text-xl text-muted-foreground" dir="rtl">
-              {lang === "ar" ? "تشكيلة فاخرة من المجوهرات المصرية الأصيلة" : "A luxurious selection of authentic Egyptian jewelry"}
+              {t("home.collections.subtitle")}
             </p>
           </div>
 
@@ -239,14 +239,14 @@ export default function Home() {
             <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
               <div>
                 <h2 className="font-serif text-3xl md:text-5xl tracking-[0.1em] mb-4">
-                  {t("الأكثر مبيعاً", homeSettings.featuredSectionTitle || "BESTSELLERS")}
+                  {t("home.bestsellers.title")}
                 </h2>
                 <p className="font-arabic text-xl text-muted-foreground" dir="rtl">
-                  {lang === "ar" ? "اختيارات عملائنا المميزين" : "Our clients' favorite picks"}
+                  {t("home.bestsellers.subtitle")}
                 </p>
               </div>
               <Link href="/shop" className="group flex items-center gap-2 text-sm uppercase tracking-widest text-muted-foreground hover:text-primary transition-colors">
-                {t("عرض الكل", "View All")} <ArrowRight className="h-4 w-4 transform group-hover:translate-x-1 transition-transform" />
+                {t("home.bestsellers.view_all")} <ArrowRight className="h-4 w-4 rtl-flip-x transform group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
 
@@ -273,6 +273,7 @@ export default function Home() {
                       <button
                         onClick={() => handleToggleWishlist(product)}
                         className={`h-12 w-12 bg-background/80 backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-primary hover:text-primary transition-colors ${isInWishlist(product.id) ? "text-primary" : ""}`}
+                        aria-label={t("product.added_to_wishlist")}
                       >
                         <Heart className={`h-5 w-5 ${isInWishlist(product.id) ? "fill-primary" : ""}`} />
                       </button>
@@ -281,7 +282,7 @@ export default function Home() {
                         className="h-12 flex-1 bg-primary text-primary-foreground font-serif tracking-[0.15em] text-xs uppercase flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
                       >
                         <ShoppingBag className="h-4 w-4" />
-                        {t("أضف", "Add")}
+                        {t("home.product.add")}
                       </button>
                     </div>
                   </div>
@@ -319,31 +320,28 @@ export default function Home() {
             </div>
             <div className="w-full lg:w-1/2 z-10">
               <h2 className="font-serif text-3xl md:text-5xl tracking-[0.1em] mb-8 leading-tight">
-                {t("صُنعت بالإرث", homeSettings.aboutTitle || "CRAFTED WITH HERITAGE")}
+                {t("home.story.title")}
               </h2>
               <div className="space-y-6 text-muted-foreground font-light text-base md:text-lg leading-relaxed mb-12">
                 <p>
-                  {homeSettings.aboutBody || t(
-                    "منذ عام 1930، حافظت تازجا على فن صناعة المجوهرات المصرية الأصيلة. كل قطعة تصاغ يدوياً في ورشتنا بالقاهرة.",
-                    "Since 1930, TAZGA has preserved the ancient art of Egyptian jewelry making. Each piece is hand-wrought in our Cairo workshop."
-                  )}
+                  {t("home.story.body_en")}
                 </p>
                 <p dir="rtl" className="font-arabic text-lg md:text-xl text-right text-foreground/90 border-r-2 border-primary pr-4">
-                  {homeSettings.aboutBodyAr || "منذ عام 1930، حافظت تازجا على فن صناعة المجوهرات المصرية الأصيلة. كل قطعة تصاغ يدوياً في ورشتنا بالقاهرة على أيدي حرفيين مهرة توارثوا هذا الفن عبر الأجيال."}
+                  {t("home.story.body_ar")}
                 </p>
               </div>
               <div className="grid grid-cols-3 gap-8 text-center border-t border-white/10 pt-8">
                 <div>
                   <div className="text-3xl font-serif text-primary mb-2">90+</div>
-                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("عاماً", "Years")}</div>
+                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("home.story.stat_years")}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-serif text-primary mb-2">50K+</div>
-                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("عميل", "Clients")}</div>
+                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("home.story.stat_clients")}</div>
                 </div>
                 <div>
                   <div className="text-3xl font-serif text-primary mb-2">20K+</div>
-                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("قطعة", "Pieces")}</div>
+                  <div className="text-xs tracking-widest uppercase text-muted-foreground font-serif">{t("home.story.stat_pieces")}</div>
                 </div>
               </div>
             </div>
@@ -360,7 +358,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-background/97 pointer-events-none" />
           <div className="container mx-auto px-4 text-center relative z-10">
             <h2 className="font-serif text-3xl md:text-4xl tracking-[0.1em] mb-4">
-              {t("تجارب عملائنا", "CLIENT EXPERIENCES")}
+              {t("home.testimonials.title")}
             </h2>
             <div className="w-12 h-[1px] bg-primary mx-auto mb-16" />
 
@@ -374,9 +372,9 @@ export default function Home() {
                           <Star key={i} className={`h-4 w-4 ${i < review.rating ? "fill-primary" : "text-muted"}`} />
                         ))}
                       </div>
-                      <h3 className="font-serif text-lg mb-4">{lang === "ar" ? review.titleAr : review.titleEn}</h3>
+                      <h3 className="font-serif text-lg mb-4">{t(review.titleKey)}</h3>
                       <p className="text-muted-foreground font-light text-sm italic mb-8 flex-1 leading-relaxed" dir={lang === "ar" ? "rtl" : "ltr"}>
-                        "{lang === "ar" ? review.bodyAr : review.bodyEn}"
+                        &ldquo;{t(review.bodyKey)}&rdquo;
                       </p>
                       <div className="text-xs tracking-widest uppercase text-foreground/80 font-serif">
                         — {review.customerName}
@@ -403,18 +401,15 @@ export default function Home() {
           <div className="max-w-2xl mx-auto text-center">
             <Mail className="h-8 w-8 text-primary mx-auto mb-6 stroke-[1.5]" />
             <h2 className="font-serif text-2xl md:text-3xl tracking-[0.1em] mb-4">
-              {t("انضم إلى المعرض", "JOIN THE GALLERY")}
+              {t("home.newsletter.title")}
             </h2>
             <p className="text-muted-foreground mb-8 font-light text-sm md:text-base">
-              {t(
-                "اشترك لتلقي تحديثات عن المجموعات الجديدة والفعاليات الحصرية وقصص إبداعاتنا.",
-                "Subscribe to receive updates on new collections, exclusive events, and the stories behind our creations."
-              )}
+              {t("home.newsletter.body")}
             </p>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <Input
                 type="email"
-                placeholder={t("أدخل بريدك الإلكتروني", "Enter your email")}
+                placeholder={t("home.newsletter.placeholder")}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
@@ -425,7 +420,7 @@ export default function Home() {
                 disabled={submittingNewsletter}
                 className="h-12 px-8 rounded-none bg-primary text-primary-foreground font-serif tracking-[0.2em] text-xs uppercase hover:bg-primary/90 transition-colors"
               >
-                {submittingNewsletter ? t("جارٍ الاشتراك...", "Subscribing...") : t("اشترك", "Subscribe")}
+                {submittingNewsletter ? t("home.newsletter.subscribing") : t("home.newsletter.subscribe")}
               </Button>
             </form>
           </div>

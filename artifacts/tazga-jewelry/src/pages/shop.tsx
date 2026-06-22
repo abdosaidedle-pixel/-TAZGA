@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useSearch } from "wouter";
+import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Search, ShoppingBag, Heart } from "lucide-react";
 import { motion } from "framer-motion";
@@ -7,6 +7,7 @@ import { productsService } from "@/lib/services/products.service";
 import { categoriesService } from "@/lib/services/categories.service";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/hooks/use-toast";
+import { useLanguage } from "@/lib/language-context";
 import type { Product, Category } from "@/lib/types";
 
 export default function Shop() {
@@ -15,9 +16,10 @@ export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
   const { toast } = useToast();
+  const { lang, t, dir } = useLanguage();
 
   // Handle category from query param if any
   const searchParams = new URLSearchParams(window.location.search);
@@ -51,7 +53,10 @@ export default function Shop() {
     e.preventDefault();
     e.stopPropagation();
     addToCart(product, 1);
-    toast({ title: "Added to Bag", description: `${product.name} has been added to your shopping bag.` });
+    toast({
+      title: t("home.product.added_to_cart"),
+      description: `${product.name} ${t("home.product.added_desc")}`,
+    });
   };
 
   const handleToggleWishlist = (product: Product, e: React.MouseEvent) => {
@@ -59,10 +64,10 @@ export default function Shop() {
     e.stopPropagation();
     if (isInWishlist(product.id)) {
       removeFromWishlist(product.id);
-      toast({ title: "Removed from Wishlist" });
+      toast({ title: t("home.product.removed_from_wishlist") });
     } else {
       addToWishlist(product);
-      toast({ title: "Added to Wishlist" });
+      toast({ title: t("home.product.added_to_wishlist") });
     }
   };
 
@@ -83,40 +88,40 @@ export default function Shop() {
   });
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
+    <div className="min-h-screen pt-24 pb-20" dir={dir}>
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div className="w-full md:w-auto">
-            <h1 className="font-serif text-4xl tracking-wider mb-2">SHOP</h1>
-            <p className="font-arabic text-muted-foreground" dir="rtl">تسوق المجوهرات</p>
+            <h1 className="font-serif text-4xl tracking-wider mb-2">{t("shop.title")}</h1>
+            <p className="font-arabic text-muted-foreground" dir="rtl">{t("shop.subtitle")}</p>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
             <div className="relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input 
-                type="text" 
-                placeholder="Search..."
+              <input
+                type="text"
+                placeholder={t("shop.search_placeholder")}
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 className="w-full sm:w-64 bg-secondary border border-border rounded-none pl-10 pr-4 py-2 focus:outline-none focus:border-primary transition-colors text-sm"
               />
             </div>
-            
+
             <div className="flex flex-wrap gap-2">
-              <button 
+              <button
                 onClick={() => setCategoryFilter("")}
                 className={`px-4 py-2 text-sm transition-colors border ${!categoryFilter ? "border-primary text-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}
               >
-                All
+                {t("shop.filter.all")}
               </button>
               {categories.map(c => (
-                <button 
+                <button
                   key={c.id}
                   onClick={() => setCategoryFilter(c.slug)}
                   className={`px-4 py-2 text-sm transition-colors border ${categoryFilter === c.slug ? "border-primary text-primary" : "border-border text-muted-foreground hover:border-primary/50"}`}
                 >
-                  {c.name}
+                  {lang === "ar" ? (c.nameAr || c.name) : c.name}
                 </button>
               ))}
             </div>
@@ -136,7 +141,7 @@ export default function Shop() {
         ) : filteredProducts.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
             {filteredProducts.map((product, index) => (
-              <motion.div 
+              <motion.div
                 key={product.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -145,36 +150,37 @@ export default function Shop() {
               >
                 <Link href={`/shop/${product.slug}`} className="relative aspect-[3/4] overflow-hidden bg-secondary mb-4 block border border-white/5">
                   {product.images && product.images[0] ? (
-                    <img 
-                      src={product.images[0]} 
-                      alt={product.name} 
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
                       className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">No image</div>
+                    <div className="w-full h-full flex items-center justify-center text-muted-foreground">{t("shop.no_image")}</div>
                   )}
                   {product.isFeatured && (
                     <span className="absolute top-4 left-4 bg-primary text-primary-foreground text-[10px] uppercase tracking-wider px-2 py-1 font-serif">
-                      Featured
+                      {t("shop.featured_badge")}
                     </span>
                   )}
-                  
+
                   {/* Quick actions on hover */}
                   <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300 bg-gradient-to-t from-background/90 to-transparent flex justify-center gap-4">
-                    <button 
+                    <button
                       onClick={(e) => handleToggleWishlist(product, e)}
                       className={`h-10 w-10 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all ${
                         isInWishlist(product.id) ? "text-primary" : ""
                       }`}
+                      aria-label={t("home.product.added_to_wishlist")}
                     >
                       <Heart className={`h-4 w-4 ${isInWishlist(product.id) ? "fill-primary" : ""}`} />
                     </button>
-                    <button 
+                    <button
                       onClick={(e) => handleAddToCart(product, e)}
                       className="h-10 px-6 bg-background/80 backdrop-blur-md rounded-full flex items-center justify-center border border-white/10 hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all gap-2 text-sm font-medium tracking-wide font-serif"
                     >
                       <ShoppingBag className="h-4 w-4" />
-                      ADD
+                      {t("home.product.add")}
                     </button>
                   </div>
                 </Link>
@@ -194,13 +200,13 @@ export default function Shop() {
           </div>
         ) : (
           <div className="py-32 text-center">
-            <h2 className="text-2xl font-serif mb-4">No products found</h2>
-            <p className="text-muted-foreground mb-8">Try adjusting your search or filters to find what you're looking for.</p>
-            <button 
+            <h2 className="text-2xl font-serif mb-4">{t("shop.no_results_title")}</h2>
+            <p className="text-muted-foreground mb-8 max-w-md mx-auto">{t("shop.no_results_body")}</p>
+            <button
               onClick={() => { setSearch(""); setCategoryFilter(""); }}
               className="px-8 py-3 bg-secondary text-foreground hover:bg-primary hover:text-primary-foreground transition-colors font-serif tracking-widest uppercase text-sm"
             >
-              Clear Filters
+              {t("shop.clear_filters")}
             </button>
           </div>
         )}

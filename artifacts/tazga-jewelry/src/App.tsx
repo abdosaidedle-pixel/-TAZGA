@@ -8,6 +8,7 @@ import NotFound from '@/pages/not-found';
 import { StoreLayout } from '@/components/layout/store-layout';
 import { AdminLayout } from '@/components/layout/admin-layout';
 import { LanguageProvider } from '@/lib/language-context';
+import { ThemeProvider } from '@/lib/theme-context';
 
 import Home from '@/pages/home';
 import Shop from '@/pages/shop';
@@ -89,18 +90,20 @@ function Router() {
 function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <AuthProvider>
-        <LanguageProvider>
-          <CartProvider>
-            <TooltipProvider>
-              <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
-                <Router />
-              </WouterRouter>
-              <Toaster />
-            </TooltipProvider>
-          </CartProvider>
-        </LanguageProvider>
-      </AuthProvider>
+      <ThemeProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            <CartProvider>
+              <TooltipProvider>
+                <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
+                  <Router />
+                </WouterRouter>
+                <Toaster />
+              </TooltipProvider>
+            </CartProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }
