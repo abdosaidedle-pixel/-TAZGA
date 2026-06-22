@@ -22,6 +22,10 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, 'dist'),
     emptyOutDir: true,
+    // Disable modulePreload polyfill which can cause timing issues
+    modulePreload: false,
+    // Modern target to ensure module script defer behavior works
+    target: 'es2020',
   },
   server: {
     port,

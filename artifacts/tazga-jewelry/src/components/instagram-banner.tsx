@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Instagram, ChevronLeft, ChevronRight, Pause, Play } from "lucide-react";
-import { db } from "@/lib/firebase";
+import { db, isFirestoreAvailable } from "@/lib/firebase";
 import { doc, getDoc, onSnapshot } from "firebase/firestore";
 import { useLanguage } from "@/lib/language-context";
 
@@ -29,6 +29,10 @@ export function InstagramBanner() {
 
   // Listen to Firestore for admin-controlled banner images
   useEffect(() => {
+    if (!isFirestoreAvailable()) {
+      // In mock mode, just keep the default slides
+      return;
+    }
     const unsubscribe = onSnapshot(doc(db, "settings", "instagramBanner"), (snap) => {
       if (snap.exists()) {
         const data = snap.data();

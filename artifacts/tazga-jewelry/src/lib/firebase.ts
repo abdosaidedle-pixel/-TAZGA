@@ -28,16 +28,22 @@ const firebaseConfig = {
   measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
+/**
+ * Mock mode is enabled when no valid Firebase config is provided.
+ * In mock mode, the app uses in-memory/localStorage fallbacks instead of Firebase.
+ */
 export const isMockMode =
   !import.meta.env.VITE_FIREBASE_API_KEY ||
   import.meta.env.VITE_FIREBASE_API_KEY === 'your_api_key_here' ||
-  import.meta.env.VITE_FIREBASE_API_KEY.startsWith('your_') ||
-  import.meta.env.VITE_FIREBASE_API_KEY.includes('placeholder');
+  (typeof import.meta.env.VITE_FIREBASE_API_KEY === 'string' &&
+    import.meta.env.VITE_FIREBASE_API_KEY.startsWith('your_')) ||
+  (typeof import.meta.env.VITE_FIREBASE_API_KEY === 'string' &&
+    import.meta.env.VITE_FIREBASE_API_KEY.includes('placeholder'));
 
-let app: any;
-let auth: any;
-let db: any;
-let storage: any;
+let app: any = null;
+let auth: any = null;
+let db: any = null;
+let storage: any = null;
 
 if (!isMockMode) {
   try {
@@ -52,6 +58,14 @@ if (!isMockMode) {
 }
 
 export { auth, db, storage };
+
+/**
+ * Helper: returns true if Firestore db is available (not in mock mode and successfully initialized).
+ * Use this to guard any code that calls doc(db, ...) or collection(db, ...).
+ */
+export function isFirestoreAvailable(): boolean {
+  return !isMockMode && db !== null && db !== undefined;
+}
 
 // Auth helpers
 export async function signInAdmin(
