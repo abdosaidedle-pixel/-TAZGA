@@ -116,18 +116,18 @@ export default function ProductDetail() {
         <div className="flex flex-col lg:flex-row gap-12 mb-24">
           {/* Images */}
           <div className="w-full lg:w-1/2 flex flex-col-reverse md:flex-row gap-4">
-            <div className="flex md:flex-col gap-4 overflow-x-auto md:w-24 md:flex-shrink-0 hide-scrollbar">
+            <div className="flex md:flex-col gap-3 overflow-x-auto md:w-24 md:flex-shrink-0 hide-scrollbar">
               {images.map((img, i) => (
                 <button
                   key={i}
                   onClick={() => setActiveImage(i)}
-                  className={`relative aspect-[3/4] w-20 md:w-full flex-shrink-0 overflow-hidden border transition-all ${activeImage === i ? "border-primary" : "border-transparent opacity-50 hover:opacity-100"}`}
+                  className={`relative aspect-[3/4] w-20 md:w-full flex-shrink-0 overflow-hidden border transition-all ${activeImage === i ? "border-primary" : "border-border opacity-60 hover:opacity-100"}`}
                 >
-                  <img src={img} alt={`${product.name} - view ${i + 1}`} className="w-full h-full object-cover" />
+                  <img src={img} alt={`${product.name} - view ${i + 1}`} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                 </button>
               ))}
             </div>
-            <div className="flex-1 relative aspect-[3/4] bg-secondary overflow-hidden group border border-white/5">
+            <div className="flex-1 relative aspect-[3/4] bg-secondary overflow-hidden group border border-border">
               <motion.img
                 key={activeImage}
                 initial={{ opacity: 0 }}
@@ -135,7 +135,7 @@ export default function ProductDetail() {
                 transition={{ duration: 0.5 }}
                 src={images[activeImage]}
                 alt={product.name}
-                className="w-full h-full object-cover"
+                className="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           </div>
@@ -227,11 +227,12 @@ export default function ProductDetail() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
               {relatedProducts.slice(0, 4).map((p) => (
                 <Link key={p.id} href={`/shop/${p.slug}`} className="group block">
-                  <div className="aspect-[3/4] bg-secondary mb-4 overflow-hidden relative border border-white/5">
+                  <div className="aspect-[3/4] bg-secondary mb-4 overflow-hidden relative border border-border">
                     <img
                       src={p.images?.[0] || "/images/category-rings.png"}
                       alt={p.name}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />
                   </div>
                   <h3 className="font-serif text-sm tracking-wide mb-1 group-hover:text-primary transition-colors line-clamp-1">{p.name}</h3>

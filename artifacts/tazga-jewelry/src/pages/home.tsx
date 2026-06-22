@@ -158,7 +158,7 @@ export default function Home() {
   return (
     <div className="w-full overflow-hidden bg-background text-foreground" dir={dir}>
       {/* ─── HERO SLIDESHOW (Azza Fahmy style) ──────────────────────────── */}
-      <section className="relative h-[70vh] min-h-[440px] sm:h-[80vh] md:h-[88vh] overflow-hidden">
+      <section className="relative h-[60vh] min-h-[400px] sm:h-[70vh] md:h-[80vh] lg:h-[88vh] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -171,7 +171,7 @@ export default function Home() {
             <img
               src={slide.image}
               alt={isAr ? slide.title_ar : slide.title_en}
-              className="w-full h-full object-cover"
+              className="absolute inset-0 w-full h-full object-cover object-center"
               fetchPriority={currentSlide === 0 ? "high" : "low"}
               loading={currentSlide === 0 ? "eager" : "lazy"}
             />
@@ -423,7 +423,7 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full lg:w-1/2"
             >
-              <div className="relative aspect-[4/5] overflow-hidden p-3 sm:p-4">
+              <div className="relative aspect-[16/10] sm:aspect-[4/3] overflow-hidden p-3 sm:p-4">
                 <div className="absolute inset-0 border border-primary/40 m-3 sm:m-4" />
                 <img
                   src="/images/workshop.png"

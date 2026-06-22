@@ -54,9 +54,9 @@ export default function Cart() {
             <div className="border-t border-white/10">
               {cartItems.map((item) => (
                 <div key={item.id} className="flex gap-6 py-8 border-b border-white/10">
-                  <div className="cart-item-image w-24 md:w-32 aspect-[3/4] bg-secondary flex-shrink-0">
+                  <div className="cart-item-image relative w-24 md:w-32 aspect-[3/4] bg-secondary flex-shrink-0 overflow-hidden border border-border">
                     {item.product?.images?.[0] && (
-                      <img src={item.product.images[0]} alt={item.product?.name} className="w-full h-full object-cover" />
+                      <img src={item.product.images[0]} alt={item.product?.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
                     )}
                   </div>
 

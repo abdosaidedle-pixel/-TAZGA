@@ -47,7 +47,8 @@ export default function Collections() {
                     <img
                       src={collection.coverImage}
                       alt={collection.name}
-                      className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100 cursor-pointer"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105 opacity-80 group-hover:opacity-100 cursor-pointer"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center bg-secondary cursor-pointer">

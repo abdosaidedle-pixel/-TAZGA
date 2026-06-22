@@ -96,8 +96,8 @@ export function InstagramBanner() {
       </div>
 
       {/* Main large featured slide */}
-      <div className="relative z-10 mx-auto max-w-5xl px-4 mb-6">
-        <div className="relative aspect-[16/7] overflow-hidden border border-white/5 shadow-2xl">
+      <div className="relative z-10 mx-auto max-w-6xl px-4 mb-6">
+        <div className="relative aspect-[16/10] sm:aspect-[16/9] md:aspect-[16/8] overflow-hidden border border-border shadow-2xl">
           <AnimatePresence mode="wait">
             <motion.img
               key={current}
@@ -120,10 +120,10 @@ export function InstagramBanner() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.5 }}
-              className="absolute bottom-6 left-0 right-0 text-center"
+              className="absolute bottom-4 sm:bottom-6 left-0 right-0 text-center px-4"
             >
               {slides[current]?.caption && (
-                <p className="font-arabic text-white text-lg drop-shadow-lg" dir="rtl">
+                <p className="font-arabic text-white text-base sm:text-lg md:text-xl drop-shadow-lg" dir="rtl">
                   {slides[current].caption}
                 </p>
               )}
@@ -133,23 +133,23 @@ export function InstagramBanner() {
           {/* Controls */}
           <button
             onClick={prev}
-            className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:border-primary hover:text-primary transition-all"
+            className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 bg-background/60 backdrop-blur-sm border border-border hover:border-primary hover:text-primary transition-all flex items-center justify-center"
             aria-label={t("instagram.prev")}
           >
-            <ChevronLeft className="h-5 w-5 rtl-flip-x" />
+            <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5 rtl-flip-x" />
           </button>
           <button
             onClick={next}
-            className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-background/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:border-primary hover:text-primary transition-all"
+            className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 bg-background/60 backdrop-blur-sm border border-border hover:border-primary hover:text-primary transition-all flex items-center justify-center"
             aria-label={t("instagram.next")}
           >
-            <ChevronRight className="h-5 w-5 rtl-flip-x" />
+            <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5 rtl-flip-x" />
           </button>
 
           {/* Pause/Play */}
           <button
             onClick={() => setIsPaused((p) => !p)}
-            className="absolute top-3 right-3 w-8 h-8 bg-background/50 backdrop-blur-sm border border-white/10 flex items-center justify-center hover:border-primary hover:text-primary transition-all"
+            className="absolute top-2 right-2 sm:top-3 sm:right-3 w-8 h-8 bg-background/60 backdrop-blur-sm border border-border hover:border-primary hover:text-primary transition-all flex items-center justify-center"
             aria-label={isPaused ? "Play" : "Pause"}
           >
             {isPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
@@ -165,7 +165,7 @@ export function InstagramBanner() {
               className={`transition-all duration-300 rounded-full ${
                 i === current
                   ? "bg-primary w-6 h-1.5"
-                  : "bg-white/20 w-1.5 h-1.5 hover:bg-white/40"
+                  : "bg-foreground/20 w-1.5 h-1.5 hover:bg-foreground/40"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
@@ -174,18 +174,19 @@ export function InstagramBanner() {
       </div>
 
       {/* Thumbnail strip */}
-      <div className="flex gap-2 overflow-x-auto pb-2 max-w-5xl mx-auto px-4 scrollbar-hide">
+      <div className="flex gap-2 sm:gap-3 overflow-x-auto pb-2 max-w-6xl mx-auto px-4 scrollbar-hide">
         {slides.map((slide, i) => (
           <button
             key={i}
             onClick={() => setCurrent(i)}
-            className={`relative flex-shrink-0 w-20 h-20 md:w-24 md:h-24 overflow-hidden border-2 transition-all duration-300 ${
-              i === current ? "border-primary scale-105" : "border-transparent opacity-50 hover:opacity-80"
+            className={`relative flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 md:w-32 md:h-32 overflow-hidden border-2 transition-all duration-300 ${
+              i === current ? "border-primary scale-105" : "border-transparent opacity-60 hover:opacity-100"
             }`}
           >
             <img
               src={slide.url}
               alt={slide.caption || `Slide ${i + 1}`}
+              loading="lazy"
               className="w-full h-full object-cover"
             />
           </button>

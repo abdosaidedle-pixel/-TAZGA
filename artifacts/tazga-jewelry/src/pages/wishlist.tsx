@@ -63,10 +63,10 @@ export default function Wishlist() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
           {wishlistItems.map((product) => (
             <div key={product.id} className="group flex flex-col">
-              <div className="relative aspect-[3/4] bg-secondary mb-4 overflow-hidden">
+              <div className="relative aspect-[3/4] bg-secondary mb-4 overflow-hidden border border-border">
                 <Link href={`/shop/${product.slug}`}>
                   {product.images?.[0] ? (
-                    <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                    <img src={product.images[0]} alt={product.name} loading="lazy" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">{t("shop.no_image")}</div>
                   )}

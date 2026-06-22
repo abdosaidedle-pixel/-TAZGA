@@ -481,6 +481,38 @@ img[loading="lazy"] {
   background-color: hsl(var(--secondary));
 }
 
+/* Ensure aspect-ratio containers establish positioning context for absolute img children.
+   Tailwind's aspect-[...] utilities use the CSS `aspect-ratio` property. */
+.aspect-\[3\/4\],
+.aspect-\[4\/5\],
+.aspect-\[16\/9\],
+.aspect-\[16\/10\],
+.aspect-\[4\/3\],
+.aspect-\[16\/7\],
+.aspect-\[16\/8\],
+.aspect-square,
+.aspect-video {
+  position: relative;
+}
+
+/* Direct img children of aspect containers default to absolute + cover
+   (prevents distortion / stretching when the source aspect ratio doesn't match) */
+.aspect-\[3\/4\] > img,
+.aspect-\[4\/5\] > img,
+.aspect-\[16\/9\] > img,
+.aspect-\[16\/10\] > img,
+.aspect-\[4\/3\] > img,
+.aspect-\[16\/7\] > img,
+.aspect-\[16\/8\] > img,
+.aspect-square > img,
+.aspect-video > img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 /* ─── TYPOGRAPHY SCALE ───────────────────────────────────────────── */
 /* Mobile-first: smaller text on phones, scales up with breakpoints */
 @media (max-width: 480px) {

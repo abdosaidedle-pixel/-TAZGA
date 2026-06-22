@@ -30,10 +30,10 @@ export default function About() {
             initial={{ opacity: 0, x: isAr ? 30 : -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="aspect-[4/5] bg-secondary p-4 relative"
+            className="aspect-[16/10] sm:aspect-[4/3] bg-secondary p-4 relative overflow-hidden"
           >
-            <div className="absolute inset-0 border border-primary/20 m-4" />
-            <img src="/images/workshop.png" alt="TAZGA Workshop" className="w-full h-full object-cover" />
+            <div className="absolute inset-0 border border-primary/20 m-4 pointer-events-none" />
+            <img src="/images/workshop.png" alt="TAZGA Workshop" loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: isAr ? -30 : 30 }}

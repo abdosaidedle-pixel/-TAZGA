@@ -143,12 +143,13 @@ export default function Shop() {
                 transition={{ delay: index * 0.05 }}
                 className="group flex flex-col"
               >
-                <Link href={`/shop/${product.slug}`} className="relative aspect-[3/4] overflow-hidden bg-secondary mb-4 block border border-white/5">
+                <Link href={`/shop/${product.slug}`} className="relative aspect-[3/4] overflow-hidden bg-secondary mb-4 block border border-border">
                   {product.images && product.images[0] ? (
                     <img
                       src={product.images[0]}
                       alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-muted-foreground">{t("shop.no_image")}</div>
