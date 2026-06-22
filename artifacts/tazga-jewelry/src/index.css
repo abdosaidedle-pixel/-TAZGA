@@ -234,6 +234,67 @@
   --shadow-2xl: 0px 2px 0px 0px rgba(0,0,0, 0.4);
 }
 
+/* ════════════════════════════════════════════════════════════════
+   THEME: AZZA CREAM — Azza Fahmy inspired
+   Cream/off-white background + Honey Gold + Navy Blue accents
+   ════════════════════════════════════════════════════════════════ */
+.azza-cream {
+  --button-outline: rgba(28, 28, 28, .12);
+  --badge-outline: rgba(189, 161, 96, .12);
+  --opaque-button-border-intensity: 5;
+  --elevate-1: rgba(28, 28, 28, .04);
+  --elevate-2: rgba(28, 28, 28, .08);
+
+  /* Cream / off-white background */
+  --background: 36 33% 97%;
+  --foreground: 0 0% 11%;
+  --border: 36 12% 87%;
+  --card: 36 25% 99%;
+  --card-foreground: 0 0% 11%;
+  --card-border: 36 12% 87%;
+  --sidebar: 36 33% 96%;
+  --sidebar-foreground: 0 0% 25%;
+  --sidebar-border: 36 12% 87%;
+  --sidebar-primary: 35 38% 56%;
+  --sidebar-primary-foreground: 36 33% 97%;
+  --sidebar-accent: 36 12% 90%;
+  --sidebar-accent-foreground: 0 0% 11%;
+  --sidebar-ring: 35 38% 56%;
+  --popover: 36 25% 99%;
+  --popover-foreground: 0 0% 11%;
+  --popover-border: 36 12% 87%;
+
+  /* Honey Gold — Azza Fahmy signature */
+  --primary: 35 38% 56%;
+  --primary-foreground: 36 33% 97%;
+
+  /* Navy Blue (Azza Fahmy signature) for secondary surface */
+  --secondary: 215 83% 18%;
+  --secondary-foreground: 36 33% 97%;
+  --muted: 36 14% 90%;
+  --muted-foreground: 0 0% 35%;
+  --accent: 215 83% 18%;
+  --accent-foreground: 36 33% 97%;
+  --destructive: 0 70% 42%;
+  --destructive-foreground: 36 33% 97%;
+  --input: 36 14% 88%;
+  --ring: 35 38% 56%;
+  --chart-1: 35 38% 56%;
+  --chart-2: 215 83% 18%;
+  --chart-3: 0 0% 28%;
+  --chart-4: 0 0% 60%;
+  --chart-5: 0 0% 85%;
+
+  --shadow-2xs: 0px 1px 0px 0px rgba(28, 28, 28, .10);
+  --shadow-xs: 0px 1px 0px 0px rgba(28, 28, 28, .10);
+  --shadow-sm: 0px 1px 2px 0px rgba(28, 28, 28, .10);
+  --shadow: 0px 1px 3px 0px rgba(28, 28, 28, .10), 0px 1px 2px -1px rgba(28, 28, 28, .08);
+  --shadow-md: 0px 4px 6px -1px rgba(28, 28, 28, .10), 0px 2px 4px -1px rgba(28, 28, 28, .06);
+  --shadow-lg: 0px 10px 15px -3px rgba(28, 28, 28, .10), 0px 4px 6px -2px rgba(28, 28, 28, .05);
+  --shadow-xl: 0px 20px 25px -5px rgba(28, 28, 28, .10), 0px 10px 10px -5px rgba(28, 28, 28, .04);
+  --shadow-2xl: 0px 25px 50px -12px rgba(28, 28, 28, .25);
+}
+
 /* Make sure body uses the active theme background */
 body {
   background-color: hsl(var(--background));

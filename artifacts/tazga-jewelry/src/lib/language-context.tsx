@@ -12,17 +12,17 @@ interface LanguageContextType {
 }
 
 const LanguageContext = createContext<LanguageContextType>({
-  lang: "ar",
+  lang: "en",
   setLang: () => {},
   toggleLanguage: () => {},
   t: (key) => key,
-  dir: "rtl",
+  dir: "ltr",
 });
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Language>(() => {
-    if (typeof window === "undefined") return "ar";
-    return (localStorage.getItem("tazga-lang") as Language) || "ar";
+    if (typeof window === "undefined") return "en";
+    return (localStorage.getItem("tazga-lang") as Language) || "en";
   });
 
   const dir: "rtl" | "ltr" = lang === "ar" ? "rtl" : "ltr";

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
-import { ShoppingBag, Heart, Menu, Search, X } from "lucide-react";
+import { ShoppingBag, Heart, Menu, Search, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "@/lib/cart-context";
 import { useLanguage } from "@/lib/language-context";
@@ -32,14 +32,51 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
     { nameKey: "nav.contact", href: "/contact" },
   ];
 
+  // Announcement bar messages (cycle)
+  const announcements =
+    lang === "ar"
+      ? [
+          "شحن مجاني للطلبات فوق 500$",
+          "صناعة يدوية منذ 1930",
+          "إرجاع مجاني خلال 14 يوم",
+        ]
+      : [
+          "Free shipping on orders over $500",
+          "Handcrafted since 1930",
+          "Complimentary 14-day returns",
+        ];
+  const [annIdx, setAnnIdx] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setAnnIdx((i) => (i + 1) % announcements.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [announcements.length]);
+
   return (
-    <div className="min-h-screen flex flex-col font-sans" dir={dir}>
+    <div className="min-h-screen flex flex-col font-sans bg-background text-foreground" dir={dir}>
+      {/* ─── ANNOUNCEMENT BAR ─── */}
+      <div className="bg-secondary text-secondary-foreground text-center text-[11px] tracking-[0.2em] uppercase py-2.5 font-serif">
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={annIdx}
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 5 }}
+            transition={{ duration: 0.4 }}
+            className="inline-block"
+          >
+            {announcements[annIdx]}
+          </motion.span>
+        </AnimatePresence>
+      </div>
+
       {/* ─── HEADER ─── */}
       <header
-        className={`fixed top-0 w-full z-50 transition-all duration-500 ${
-          isScrolled || location !== "/"
-            ? "bg-background/95 backdrop-blur-md border-b border-white/5 py-3"
-            : "bg-transparent py-5"
+        className={`sticky top-0 z-50 transition-all duration-500 ${
+          isScrolled
+            ? "bg-background/95 backdrop-blur-md border-b border-border py-3 shadow-sm"
+            : "bg-background border-b border-border py-4"
         }`}
       >
         <div className="container mx-auto px-4 md:px-8 flex items-center justify-between gap-3">
@@ -57,49 +94,62 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 ${
+                  className={`text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 relative group ${
                     location === link.href
                       ? "text-primary"
-                      : "text-foreground/70 hover:text-primary"
+                      : "text-foreground/80 hover:text-primary"
                   }`}
                 >
                   {t(link.nameKey)}
+                  <span
+                    className={`absolute -bottom-1 left-0 h-[1px] bg-primary transition-all duration-300 ${
+                      location === link.href ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
                 </Link>
               ))}
             </nav>
           </div>
 
-          {/* CENTER — Logo */}
+          {/* CENTER — Logo (Azza Fahmy style: centered, serif, refined) */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center group">
-            <div className="font-serif text-2xl md:text-3xl tracking-[0.25em] font-bold text-foreground group-hover:text-primary transition-colors duration-500">
+            <div className="font-serif text-2xl md:text-3xl tracking-[0.35em] font-bold text-foreground group-hover:text-primary transition-colors duration-500">
               TAZGA
             </div>
-            <div className="font-arabic text-[10px] text-primary mt-0.5 tracking-widest" dir="rtl">
+            <div
+              className="font-arabic text-[9px] text-primary mt-0.5 tracking-[0.3em] uppercase"
+              dir="rtl"
+            >
               {t("brand.tagline")}
             </div>
           </Link>
 
           {/* RIGHT — Icons + Language toggle + Theme toggle */}
-          <div className="flex items-center gap-3 md:gap-5 flex-1 justify-end">
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-5 flex-1 justify-end">
             {/* Theme toggle */}
-            <div className="hidden md:block">
-              <ThemeToggle />
-            </div>
+            <ThemeToggle />
 
             {/* Language toggle button */}
             <button
               onClick={toggleLanguage}
-              className="text-xs tracking-widest font-serif border border-white/20 hover:border-primary text-foreground/70 hover:text-primary transition-all duration-300 px-2.5 py-1 hidden md:flex items-center gap-1"
+              className="text-xs tracking-widest font-serif border border-current/20 hover:border-primary text-foreground/80 hover:text-primary transition-all duration-300 px-2.5 py-1 hidden md:flex items-center gap-1"
               title={lang === "ar" ? t("lang.switch_hint_en") : t("lang.switch_hint_ar")}
               aria-label={lang === "ar" ? t("lang.switch_hint_en") : t("lang.switch_hint_ar")}
             >
               {lang === "ar" ? t("lang.switch_to_en") : t("lang.switch_to_ar")}
             </button>
 
-            <button className="text-foreground/70 hover:text-primary transition-colors hidden sm:block" aria-label="Search">
+            <button
+              className="text-foreground/80 hover:text-primary transition-colors hidden sm:block"
+              aria-label="Search"
+            >
               <Search className="h-5 w-5" />
             </button>
-            <Link href="/wishlist" className="text-foreground/70 hover:text-primary transition-colors hidden md:block relative" aria-label={t("wishlist.title")}>
+            <Link
+              href="/wishlist"
+              className="text-foreground/80 hover:text-primary transition-colors hidden md:block relative"
+              aria-label={t("wishlist.title")}
+            >
               <Heart className="h-5 w-5" />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -107,7 +157,11 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                 </span>
               )}
             </Link>
-            <Link href="/cart" className="text-foreground/70 hover:text-primary transition-colors relative" aria-label={t("cart.title")}>
+            <Link
+              href="/cart"
+              className="text-foreground/80 hover:text-primary transition-colors relative"
+              aria-label={t("cart.title")}
+            >
               <ShoppingBag className="h-5 w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
@@ -123,19 +177,25 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: dir === "rtl" ? 300 : -300 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: dir === "rtl" ? 300 : -300 }}
-            transition={{ type: "spring", damping: 25 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             className="fixed inset-0 z-[60] bg-background/98 backdrop-blur-xl p-6 sm:p-8 overflow-y-auto"
             dir={dir}
           >
             <div className="flex justify-between items-center mb-10">
               <div>
-                <div className="font-serif text-2xl tracking-[0.25em] font-bold">TAZGA</div>
-                <div className="font-arabic text-xs text-primary mt-1" dir="rtl">{t("brand.tagline")}</div>
+                <div className="font-serif text-2xl tracking-[0.35em] font-bold">TAZGA</div>
+                <div className="font-arabic text-xs text-primary mt-1 tracking-widest" dir="rtl">
+                  {t("brand.tagline")}
+                </div>
               </div>
-              <button onClick={() => setMobileMenuOpen(false)} className="text-foreground/60 hover:text-primary transition-colors" aria-label={t("common.close")}>
+              <button
+                onClick={() => setMobileMenuOpen(false)}
+                className="text-foreground/60 hover:text-primary transition-colors"
+                aria-label={t("common.close")}
+              >
                 <X className="h-6 w-6" />
               </button>
             </div>
@@ -151,7 +211,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                   <Link
                     href={link.href}
                     onClick={() => setMobileMenuOpen(false)}
-                    className="text-2xl font-serif tracking-wider hover:text-primary transition-colors block"
+                    className="text-2xl font-serif tracking-[0.15em] hover:text-primary transition-colors block uppercase"
                   >
                     {t(link.nameKey)}
                   </Link>
@@ -160,7 +220,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </nav>
 
             {/* Mobile controls */}
-            <div className="flex flex-col gap-4 mb-10 pb-10 border-b border-white/10">
+            <div className="flex flex-col gap-4 mb-10 pb-10 border-b border-border">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-widest font-serif text-muted-foreground">
                   {t("theme.toggle")}
@@ -168,8 +228,11 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                 <ThemeToggle variant="full" />
               </div>
               <button
-                onClick={() => { toggleLanguage(); setMobileMenuOpen(false); }}
-                className="border border-white/20 hover:border-primary text-foreground/70 hover:text-primary transition-all px-6 py-3 font-serif tracking-widest text-sm"
+                onClick={() => {
+                  toggleLanguage();
+                  setMobileMenuOpen(false);
+                }}
+                className="border border-current/20 hover:border-primary text-foreground/80 hover:text-primary transition-all px-6 py-3 font-serif tracking-widest text-sm"
               >
                 {lang === "ar" ? t("lang.switch_hint_en") : t("lang.switch_hint_ar")}
               </button>
@@ -190,24 +253,23 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
 
       {/* ─── FOOTER ─── */}
-      <footer className="bg-card border-t border-border pt-16 sm:pt-20 pb-10 relative overflow-hidden">
-        {/* Jewelry bg decoration */}
-        <div className="absolute inset-0 pointer-events-none opacity-[0.03]"
-          style={{ backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23c9a96e' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E\")", backgroundSize: "60px 60px" }}
-        />
-
+      <footer className="bg-secondary text-secondary-foreground pt-16 sm:pt-20 pb-10 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12 md:mb-16">
             <div className="col-span-1 sm:col-span-2">
-              <h3 className="font-serif text-2xl tracking-[0.25em] mb-2 text-foreground">TAZGA</h3>
-              <p className="font-arabic text-sm text-primary mb-4" dir="rtl">{t("brand.tagline")}</p>
-              <p className="text-muted-foreground max-w-sm font-light leading-relaxed text-sm">
+              <h3 className="font-serif text-2xl tracking-[0.35em] mb-2 text-secondary-foreground">
+                TAZGA
+              </h3>
+              <p className="font-arabic text-sm text-primary mb-4" dir="rtl">
+                {t("brand.tagline")}
+              </p>
+              <p className="text-secondary-foreground/80 max-w-sm font-light leading-relaxed text-sm">
                 {t("footer.about")}
               </p>
 
               {/* Social icons in footer brand column */}
               <div className="mt-6">
-                <p className="text-xs uppercase tracking-widest font-serif text-muted-foreground mb-3">
+                <p className="text-xs uppercase tracking-widest font-serif text-secondary-foreground/60 mb-3">
                   {t("footer.follow_us")}
                 </p>
                 <SocialIcons variant="footer" size="sm" />
@@ -215,10 +277,10 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-foreground">
+              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-secondary-foreground">
                 {t("footer.links")}
               </h4>
-              <ul className="space-y-3 md:space-y-4 text-muted-foreground font-light text-sm">
+              <ul className="space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-sm">
                 <li><Link href="/shop" className="hover:text-primary transition-colors">{t("nav.shop")}</Link></li>
                 <li><Link href="/collections" className="hover:text-primary transition-colors">{t("nav.collections")}</Link></li>
                 <li><Link href="/about" className="hover:text-primary transition-colors">{t("nav.about")}</Link></li>
@@ -227,10 +289,10 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-foreground">
+              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-secondary-foreground">
                 {t("footer.client_care")}
               </h4>
-              <ul className="space-y-3 md:space-y-4 text-muted-foreground font-light text-sm">
+              <ul className="space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-sm">
                 <li><Link href="/faq" className="hover:text-primary transition-colors">{t("footer.faq")}</Link></li>
                 <li><Link href="/shipping" className="hover:text-primary transition-colors">{t("footer.shipping")}</Link></li>
                 <li><Link href="/care" className="hover:text-primary transition-colors">{t("footer.care")}</Link></li>
@@ -238,7 +300,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center pt-6 md:pt-8 border-t border-white/10 text-xs text-muted-foreground gap-4">
+          <div className="flex flex-col md:flex-row justify-between items-center pt-6 md:pt-8 border-t border-secondary-foreground/10 text-xs text-secondary-foreground/70 gap-4">
             <p>© {new Date().getFullYear()} TAZGA Jewelry. {t("footer.rights")}</p>
             <div className="flex gap-4 md:gap-6">
               <Link href="/privacy" className="hover:text-primary transition-colors">{t("footer.privacy")}</Link>
