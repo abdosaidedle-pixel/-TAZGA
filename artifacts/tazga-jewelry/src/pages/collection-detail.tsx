@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useParams, Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -8,40 +8,42 @@ import { productsService } from "@/lib/services/products.service";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
 import type { Collection, Product } from "@/lib/types";
 
 export default function CollectionDetail() {
   const { slug } = useParams<{ slug: string }>();
-  const [collection, setCollection] = useState<Collection | null>(null);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [loadingProducts, setLoadingProducts] = useState(true);
   const { toast } = useToast();
   const { t, dir } = useLanguage();
 
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
 
-  useEffect(() => {
-    async function loadCollectionData() {
-      setLoading(true);
-      setLoadingProducts(true);
-      try {
-        const col = await collectionsService.getBySlug(slug);
-        setCollection(col);
-        setLoading(false);
+  // ─── Real-time subscriptions ───
+  // Subscribe to ALL collections then filter by slug (so admin edits appear instantly)
+  const { data: allCollections, loading: loadingCollections } = useRealtimeDataWithDefault<Collection[]>(
+    (cb) => collectionsService.subscribeAll(cb),
+    [],
+    []
+  );
 
-        if (col) {
-          const prods = await productsService.getAll({ collectionId: col.id });
-          setProducts(prods);
-        }
-      } catch (err) {
-        console.error("Error loading collection details:", err);
-      } finally {
-        setLoading(false);
-        setLoadingProducts(false);
-      }
-    }
-    loadCollectionData();
+  const collection = allCollections.find((c) => c.slug === slug) || null;
+  const collectionId = collection?.id;
+
+  const { data: allProducts, loading: loadingProducts } = useRealtimeDataWithDefault<Product[]>(
+    (cb) => productsService.subscribeAll(cb),
+    [],
+    []
+  );
+
+  const products = collectionId
+    ? allProducts.filter((p) => p.collectionId === collectionId)
+    : [];
+
+  const loading = loadingCollections || (loadingProducts && !!collectionId);
+
+  useEffect(() => {
+    // Reset scroll on slug change
+    window.scrollTo(0, 0);
   }, [slug]);
 
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {

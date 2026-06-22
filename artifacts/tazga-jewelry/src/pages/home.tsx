@@ -11,10 +11,11 @@ import { useLanguage } from "@/lib/language-context";
 import { productsService } from "@/lib/services/products.service";
 import { collectionsService } from "@/lib/services/collections.service";
 import { settingsService } from "@/lib/services/settings.service";
-import { db } from "@/lib/firebase";
+import { db, isFirestoreAvailable } from "@/lib/firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import type { Product, Collection, HomepageSettings } from "@/lib/types";
 import { InstagramBanner } from "@/components/instagram-banner";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
 
 // ── Hero slides (Azza Fahmy style — full-width rotating banners) ──────────
 const HERO_SLIDES = [
@@ -56,11 +57,28 @@ export default function Home() {
   const { lang, t, dir } = useLanguage();
 
   const [email, setEmail] = useState("");
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [dbCollections, setDbCollections] = useState<Collection[]>([]);
-  const [homeSettings, setHomeSettings] = useState<Partial<HomepageSettings>>({});
-  const [loading, setLoading] = useState(true);
   const [submittingNewsletter, setSubmittingNewsletter] = useState(false);
+
+  // ─── Real-time subscriptions: admin edits appear instantly for all users ───
+  const { data: featuredProducts } = useRealtimeDataWithDefault<Product[]>(
+    (cb) => productsService.subscribeAll((products) => {
+      cb(products.filter((p) => p.isFeatured && p.inStock).slice(0, 8));
+    }),
+    [],
+    []
+  );
+
+  const { data: dbCollections } = useRealtimeDataWithDefault<Collection[]>(
+    (cb) => collectionsService.subscribeAll(cb),
+    [],
+    []
+  );
+
+  const { data: homeSettings } = useRealtimeDataWithDefault<Partial<HomepageSettings>>(
+    (cb) => settingsService.subscribeHomepage(cb),
+    [],
+    {}
+  );
 
   // Hero slideshow
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -76,35 +94,17 @@ export default function Home() {
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-  useEffect(() => {
-    async function loadHomeData() {
-      try {
-        const [featured, cols, settings] = await Promise.all([
-          productsService.getFeatured(8),
-          collectionsService.getAll(),
-          settingsService.getHomepage(),
-        ]);
-        setFeaturedProducts(featured);
-        setDbCollections(cols);
-        setHomeSettings(settings);
-      } catch (err) {
-        console.error("Error loading home page data from Firebase:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadHomeData();
-  }, []);
-
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
     setSubmittingNewsletter(true);
     try {
-      await addDoc(collection(db, "newsletter"), {
-        email: email.trim().toLowerCase(),
-        createdAt: serverTimestamp(),
-      });
+      if (isFirestoreAvailable()) {
+        await addDoc(collection(db, "newsletter"), {
+          email: email.trim().toLowerCase(),
+          createdAt: serverTimestamp(),
+        });
+      }
       toast({ title: t("home.newsletter.success_title"), description: t("home.newsletter.success_body") });
       setEmail("");
     } catch (err) {
@@ -158,7 +158,7 @@ export default function Home() {
   return (
     <div className="w-full overflow-hidden bg-background text-foreground" dir={dir}>
       {/* ─── HERO SLIDESHOW (Azza Fahmy style) ──────────────────────────── */}
-      <section className="relative h-[80vh] min-h-[500px] md:h-[88vh] overflow-hidden">
+      <section className="relative h-[70vh] min-h-[440px] sm:h-[80vh] md:h-[88vh] overflow-hidden">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentSlide}
@@ -168,7 +168,13 @@ export default function Home() {
             transition={{ duration: 1, ease: "easeInOut" }}
             className="absolute inset-0"
           >
-            <img src={slide.image} alt={isAr ? slide.title_ar : slide.title_en} className="w-full h-full object-cover" />
+            <img
+              src={slide.image}
+              alt={isAr ? slide.title_ar : slide.title_en}
+              className="w-full h-full object-cover"
+              fetchPriority={currentSlide === 0 ? "high" : "low"}
+              loading={currentSlide === 0 ? "eager" : "lazy"}
+            />
             <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-background/20" />
             <div className="absolute inset-0 bg-gradient-to-r from-background/80 via-transparent to-transparent" />
           </motion.div>
@@ -184,11 +190,11 @@ export default function Home() {
               transition={{ duration: 0.8, delay: 0.2 }}
               className="max-w-2xl"
             >
-              <p className="text-xs md:text-sm uppercase tracking-[0.3em] text-primary font-serif mb-4">
+              <p className="text-[10px] sm:text-xs md:text-sm uppercase tracking-[0.3em] text-primary font-serif mb-3 sm:mb-4">
                 {isAr ? slide.eyebrow_ar : slide.eyebrow_en}
               </p>
               <h1
-                className={`font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-8 text-foreground ${
+                className={`hero-title font-serif text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold leading-[1.05] mb-6 sm:mb-8 text-foreground ${
                   isAr ? "font-arabic" : ""
                 }`}
                 dir={isAr ? "rtl" : "ltr"}
@@ -197,7 +203,7 @@ export default function Home() {
               </h1>
               <Link
                 href={slide.link}
-                className="inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground px-8 md:px-10 py-4 uppercase tracking-[0.2em] text-sm transition-all duration-300 font-serif group"
+                className="hero-cta inline-flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground px-6 sm:px-8 md:px-10 py-3 sm:py-4 uppercase tracking-[0.2em] text-xs sm:text-sm transition-all duration-300 font-serif group"
               >
                 {isAr ? slide.cta_ar : slide.cta_en}
                 <ArrowRight className="h-4 w-4 rtl-flip-x group-hover:translate-x-1 transition-transform" />
@@ -207,30 +213,30 @@ export default function Home() {
         </div>
 
         {/* Slide controls */}
-        <div className="absolute bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-3 z-10">
+        <div className="absolute bottom-4 sm:bottom-6 md:bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2 sm:gap-3 z-10">
           <button
             onClick={() => setCurrentSlide((s) => (s - 1 + HERO_SLIDES.length) % HERO_SLIDES.length)}
-            className="h-10 w-10 border border-current/30 hover:border-primary hover:text-primary text-foreground/70 transition-all flex items-center justify-center rounded-full bg-background/40 backdrop-blur-sm"
+            className="h-8 w-8 sm:h-10 sm:w-10 border border-current/30 hover:border-primary hover:text-primary text-foreground/70 transition-all flex items-center justify-center rounded-full bg-background/40 backdrop-blur-sm"
             aria-label="Previous slide"
           >
-            <ChevronLeft className="h-4 w-4 rtl-flip-x" />
+            <ChevronLeft className="h-3.5 w-3.5 sm:h-4 sm:w-4 rtl-flip-x" />
           </button>
           {HERO_SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => setCurrentSlide(i)}
               className={`h-1.5 rounded-full transition-all duration-500 ${
-                i === currentSlide ? "bg-primary w-10" : "bg-foreground/30 w-4 hover:bg-foreground/50"
+                i === currentSlide ? "bg-primary w-6 sm:w-10" : "bg-foreground/30 w-3 sm:w-4 hover:bg-foreground/50"
               }`}
               aria-label={`Go to slide ${i + 1}`}
             />
           ))}
           <button
             onClick={() => setCurrentSlide((s) => (s + 1) % HERO_SLIDES.length)}
-            className="h-10 w-10 border border-current/30 hover:border-primary hover:text-primary text-foreground/70 transition-all flex items-center justify-center rounded-full bg-background/40 backdrop-blur-sm"
+            className="h-8 w-8 sm:h-10 sm:w-10 border border-current/30 hover:border-primary hover:text-primary text-foreground/70 transition-all flex items-center justify-center rounded-full bg-background/40 backdrop-blur-sm"
             aria-label="Next slide"
           >
-            <ChevronRight className="h-4 w-4 rtl-flip-x" />
+            <ChevronRight className="h-3.5 w-3.5 sm:h-4 sm:w-4 rtl-flip-x" />
           </button>
         </div>
       </section>
@@ -284,14 +290,15 @@ export default function Home() {
                   <img
                     src={col.coverImage || "/images/category-rings.png"}
                     alt={isAr ? (col.nameAr || col.name) : col.name}
+                    loading="lazy"
                     className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/20 to-transparent opacity-90 group-hover:opacity-75 transition-opacity" />
-                  <div className="absolute bottom-0 w-full p-4 md:p-5 text-center">
-                    <h3 className="font-serif text-base md:text-lg tracking-wider mb-1 text-foreground">
+                  <div className="absolute bottom-0 w-full p-3 sm:p-4 md:p-5 text-center">
+                    <h3 className="font-serif text-sm sm:text-base md:text-lg tracking-wider mb-1 text-foreground">
                       {isAr ? (col.nameAr || col.name) : col.name}
                     </h3>
-                    <span className="text-[10px] uppercase tracking-[0.25em] text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       {isAr ? "اكتشف" : "Discover"}
                     </span>
                   </div>
@@ -341,20 +348,21 @@ export default function Home() {
                 {featuredProducts.map((product) => (
                   <div
                     key={product.id}
-                    className="flex-[0_0_100%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] min-w-0 pl-4"
+                    className="flex-[0_0_70%] sm:flex-[0_0_50%] md:flex-[0_0_33.33%] lg:flex-[0_0_25%] min-w-0 pl-3 sm:pl-4"
                   >
                     <div className="group">
-                      <div className="relative aspect-[3/4] bg-secondary mb-4 overflow-hidden border border-border">
+                      <div className="relative aspect-[3/4] bg-secondary mb-3 sm:mb-4 overflow-hidden border border-border">
                         <img
                           src={product.images?.[0] || "/images/category-rings.png"}
                           alt={product.name}
+                          loading="lazy"
                           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors" />
-                        <div className="absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-center gap-2">
+                        <div className="product-card-actions absolute inset-x-0 bottom-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 flex justify-center gap-2">
                           <button
                             onClick={() => handleToggleWishlist(product)}
-                            className={`h-10 w-10 bg-background/90 backdrop-blur-md flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors ${
+                            className={`h-9 w-9 sm:h-10 sm:w-10 bg-background/90 backdrop-blur-md flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors ${
                               isInWishlist(product.id) ? "text-primary" : ""
                             }`}
                             aria-label={t("home.product.added_to_wishlist")}
@@ -363,7 +371,7 @@ export default function Home() {
                           </button>
                           <button
                             onClick={() => handleAddToCart(product)}
-                            className="h-10 px-5 bg-primary text-primary-foreground font-serif tracking-[0.15em] text-[10px] uppercase flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
+                            className="h-9 sm:h-10 px-4 sm:px-5 bg-primary text-primary-foreground font-serif tracking-[0.15em] text-[10px] sm:text-xs uppercase flex items-center justify-center gap-2 hover:bg-primary/90 transition-colors"
                           >
                             <ShoppingBag className="h-3 w-3" />
                             {t("home.product.add")}
@@ -373,16 +381,16 @@ export default function Home() {
                       <div className="text-center">
                         <Link
                           href={`/shop/${product.slug}`}
-                          className="font-serif text-sm md:text-base tracking-wide hover:text-primary transition-colors line-clamp-1 block mb-1"
+                          className="font-serif text-xs sm:text-sm md:text-base tracking-wide hover:text-primary transition-colors line-clamp-1 block mb-1"
                         >
                           {product.name}
                         </Link>
                         {product.nameAr && (
-                          <p className="font-arabic text-xs text-muted-foreground mb-1" dir="rtl">
+                          <p className="font-arabic text-[10px] sm:text-xs text-muted-foreground mb-1" dir="rtl">
                             {product.nameAr}
                           </p>
                         )}
-                        <p className="text-primary font-medium text-sm tracking-wide">
+                        <p className="text-primary font-medium text-xs sm:text-sm tracking-wide">
                           ${product.price.toLocaleString()}
                         </p>
                       </div>
@@ -415,11 +423,12 @@ export default function Home() {
               viewport={{ once: true }}
               className="w-full lg:w-1/2"
             >
-              <div className="relative aspect-[4/5] overflow-hidden p-4">
-                <div className="absolute inset-0 border border-primary/40 m-4" />
+              <div className="relative aspect-[4/5] overflow-hidden p-3 sm:p-4">
+                <div className="absolute inset-0 border border-primary/40 m-3 sm:m-4" />
                 <img
                   src="/images/workshop.png"
                   alt="TAZGA Workshop"
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
               </div>

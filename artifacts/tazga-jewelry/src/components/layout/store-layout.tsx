@@ -75,26 +75,26 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
       <header
         className={`sticky top-0 z-50 transition-all duration-500 ${
           isScrolled
-            ? "bg-background/95 backdrop-blur-md border-b border-border py-3 shadow-sm"
-            : "bg-background border-b border-border py-4"
+            ? "bg-background/95 backdrop-blur-md border-b border-border py-2 sm:py-3 shadow-sm"
+            : "bg-background border-b border-border py-3 sm:py-4"
         }`}
       >
-        <div className="container mx-auto px-4 md:px-8 flex items-center justify-between gap-3">
+        <div className="container mx-auto px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2 sm:gap-3">
           {/* LEFT — mobile hamburger + desktop nav */}
-          <div className="flex items-center gap-4 md:gap-6 flex-1">
+          <div className="flex items-center gap-3 sm:gap-4 md:gap-6 flex-1">
             <button
-              className="md:hidden text-foreground hover:text-primary transition-colors"
+              className="md:hidden text-foreground hover:text-primary transition-colors p-1"
               onClick={() => setMobileMenuOpen(true)}
               aria-label={t("common.open_menu")}
             >
-              <Menu className="h-6 w-6" />
+              <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
-            <nav className="hidden md:flex items-center gap-6 lg:gap-8">
+            <nav className="hidden md:flex items-center gap-4 lg:gap-8">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 relative group ${
+                  className={`text-[10px] sm:text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 relative group ${
                     location === link.href
                       ? "text-primary"
                       : "text-foreground/80 hover:text-primary"
@@ -113,11 +113,11 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
 
           {/* CENTER — Logo (Azza Fahmy style: centered, serif, refined) */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center group">
-            <div className="font-serif text-2xl md:text-3xl tracking-[0.35em] font-bold text-foreground group-hover:text-primary transition-colors duration-500">
+            <div className="header-logo font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.35em] font-bold text-foreground group-hover:text-primary transition-colors duration-500">
               TAZGA
             </div>
             <div
-              className="font-arabic text-[9px] text-primary mt-0.5 tracking-[0.3em] uppercase"
+              className="font-arabic text-[8px] sm:text-[9px] text-primary mt-0.5 tracking-[0.25em] sm:tracking-[0.3em] uppercase"
               dir="rtl"
             >
               {t("brand.tagline")}
@@ -125,14 +125,16 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
           </Link>
 
           {/* RIGHT — Icons + Language toggle + Theme toggle */}
-          <div className="flex items-center gap-2 sm:gap-3 md:gap-5 flex-1 justify-end">
+          <div className="flex items-center gap-1.5 sm:gap-2 md:gap-5 flex-1 justify-end">
             {/* Theme toggle */}
-            <ThemeToggle />
+            <div className="hide-mobile">
+              <ThemeToggle />
+            </div>
 
             {/* Language toggle button */}
             <button
               onClick={toggleLanguage}
-              className="text-xs tracking-widest font-serif border border-current/20 hover:border-primary text-foreground/80 hover:text-primary transition-all duration-300 px-2.5 py-1 hidden md:flex items-center gap-1"
+              className="text-[10px] sm:text-xs tracking-widest font-serif border border-current/20 hover:border-primary text-foreground/80 hover:text-primary transition-all duration-300 px-2 sm:px-2.5 py-1 hidden md:flex items-center gap-1"
               title={lang === "ar" ? t("lang.switch_hint_en") : t("lang.switch_hint_ar")}
               aria-label={lang === "ar" ? t("lang.switch_hint_en") : t("lang.switch_hint_ar")}
             >
@@ -140,17 +142,17 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </button>
 
             <button
-              className="text-foreground/80 hover:text-primary transition-colors hidden sm:block"
+              className="hide-search-mobile text-foreground/80 hover:text-primary transition-colors"
               aria-label="Search"
             >
-              <Search className="h-5 w-5" />
+              <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             </button>
             <Link
               href="/wishlist"
-              className="text-foreground/80 hover:text-primary transition-colors hidden md:block relative"
+              className="text-foreground/80 hover:text-primary transition-colors hidden sm:block relative"
               aria-label={t("wishlist.title")}
             >
-              <Heart className="h-5 w-5" />
+              <Heart className="h-4 w-4 sm:h-5 sm:w-5" />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                   {wishlistCount}
@@ -162,7 +164,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
               className="text-foreground/80 hover:text-primary transition-colors relative"
               aria-label={t("cart.title")}
             >
-              <ShoppingBag className="h-5 w-5" />
+              <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-primary text-primary-foreground text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold">
                   {cartCount}
@@ -253,23 +255,23 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
       <main className="flex-1">{children}</main>
 
       {/* ─── FOOTER ─── */}
-      <footer className="bg-secondary text-secondary-foreground pt-16 sm:pt-20 pb-10 relative overflow-hidden">
+      <footer className="bg-secondary text-secondary-foreground pt-12 sm:pt-16 md:pt-20 pb-8 sm:pb-10 relative overflow-hidden">
         <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 mb-12 md:mb-16">
-            <div className="col-span-1 sm:col-span-2">
-              <h3 className="font-serif text-2xl tracking-[0.35em] mb-2 text-secondary-foreground">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12 md:mb-16">
+            <div className="col-span-2 sm:col-span-2 md:col-span-2">
+              <h3 className="font-serif text-xl sm:text-2xl tracking-[0.25em] sm:tracking-[0.35em] mb-2 text-secondary-foreground">
                 TAZGA
               </h3>
-              <p className="font-arabic text-sm text-primary mb-4" dir="rtl">
+              <p className="font-arabic text-xs sm:text-sm text-primary mb-3 sm:mb-4" dir="rtl">
                 {t("brand.tagline")}
               </p>
-              <p className="text-secondary-foreground/80 max-w-sm font-light leading-relaxed text-sm">
+              <p className="text-secondary-foreground/80 max-w-sm font-light leading-relaxed text-xs sm:text-sm">
                 {t("footer.about")}
               </p>
 
               {/* Social icons in footer brand column */}
-              <div className="mt-6">
-                <p className="text-xs uppercase tracking-widest font-serif text-secondary-foreground/60 mb-3">
+              <div className="mt-5 sm:mt-6">
+                <p className="text-[10px] sm:text-xs uppercase tracking-widest font-serif text-secondary-foreground/60 mb-3">
                   {t("footer.follow_us")}
                 </p>
                 <SocialIcons variant="footer" size="sm" />
@@ -277,10 +279,10 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-secondary-foreground">
+              <h4 className="font-serif text-xs sm:text-sm tracking-[0.2em] uppercase mb-4 sm:mb-5 md:mb-6 text-secondary-foreground">
                 {t("footer.links")}
               </h4>
-              <ul className="space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-sm">
+              <ul className="space-y-2 sm:space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-xs sm:text-sm">
                 <li><Link href="/shop" className="hover:text-primary transition-colors">{t("nav.shop")}</Link></li>
                 <li><Link href="/collections" className="hover:text-primary transition-colors">{t("nav.collections")}</Link></li>
                 <li><Link href="/about" className="hover:text-primary transition-colors">{t("nav.about")}</Link></li>
@@ -289,10 +291,10 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
 
             <div>
-              <h4 className="font-serif text-sm tracking-[0.2em] uppercase mb-5 md:mb-6 text-secondary-foreground">
+              <h4 className="font-serif text-xs sm:text-sm tracking-[0.2em] uppercase mb-4 sm:mb-5 md:mb-6 text-secondary-foreground">
                 {t("footer.client_care")}
               </h4>
-              <ul className="space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-sm">
+              <ul className="space-y-2 sm:space-y-3 md:space-y-4 text-secondary-foreground/80 font-light text-xs sm:text-sm">
                 <li><Link href="/faq" className="hover:text-primary transition-colors">{t("footer.faq")}</Link></li>
                 <li><Link href="/shipping" className="hover:text-primary transition-colors">{t("footer.shipping")}</Link></li>
                 <li><Link href="/care" className="hover:text-primary transition-colors">{t("footer.care")}</Link></li>
@@ -300,8 +302,8 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row justify-between items-center pt-6 md:pt-8 border-t border-secondary-foreground/10 text-xs text-secondary-foreground/70 gap-4">
-            <p>© {new Date().getFullYear()} TAZGA Jewelry. {t("footer.rights")}</p>
+          <div className="flex flex-col md:flex-row justify-between items-center pt-5 sm:pt-6 md:pt-8 border-t border-secondary-foreground/10 text-[10px] sm:text-xs text-secondary-foreground/70 gap-3 sm:gap-4">
+            <p className="text-center md:text-left">© {new Date().getFullYear()} TAZGA Jewelry. {t("footer.rights")}</p>
             <div className="flex gap-4 md:gap-6">
               <Link href="/privacy" className="hover:text-primary transition-colors">{t("footer.privacy")}</Link>
               <Link href="/terms" className="hover:text-primary transition-colors">{t("footer.terms")}</Link>

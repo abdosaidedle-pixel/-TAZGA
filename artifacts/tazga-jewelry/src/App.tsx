@@ -10,6 +10,29 @@ import { AdminLayout } from '@/components/layout/admin-layout';
 import { LanguageProvider } from '@/lib/language-context';
 import { ThemeProvider } from '@/lib/theme-context';
 
+// React Query client with sensible defaults for e-commerce
+// Note: Most data uses Firestore onSnapshot (real-time) via useRealtimeData hook
+// React Query is used for ad-hoc queries and mutations
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // Refresh data when user refocuses the tab (e.g., after switching back from admin)
+      refetchOnWindowFocus: true,
+      // Refresh when network reconnects
+      refetchOnReconnect: true,
+      // Keep data fresh for 30 seconds
+      staleTime: 30 * 1000,
+      // Cache for 5 minutes
+      gcTime: 5 * 60 * 1000,
+      // Don't retry on 4xx errors
+      retry: (failureCount, error: any) => {
+        if (error?.status >= 400 && error?.status < 500) return false;
+        return failureCount < 2;
+      },
+    },
+  },
+});
+
 import Home from '@/pages/home';
 import Shop from '@/pages/shop';
 import ProductDetail from '@/pages/product-detail';
@@ -34,8 +57,6 @@ import AdminSettings from '@/pages/admin/settings';
 import AdminInstagramBanner from '@/pages/admin/instagram-banner';
 
 import { CartProvider } from '@/lib/cart-context';
-
-const queryClient = new QueryClient();
 
 function AdminRouter() {
   return (

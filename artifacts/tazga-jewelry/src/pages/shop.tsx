@@ -8,18 +8,31 @@ import { categoriesService } from "@/lib/services/categories.service";
 import { useCart } from "@/lib/cart-context";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
 import type { Product, Category } from "@/lib/types";
 
 export default function Shop() {
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<string>("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [loading, setLoading] = useState(true);
 
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
   const { toast } = useToast();
   const { lang, t, dir } = useLanguage();
+
+  // ─── Real-time subscriptions ───
+  const { data: products, loading: productsLoading } = useRealtimeDataWithDefault<Product[]>(
+    (cb) => productsService.subscribeAll(cb),
+    [],
+    []
+  );
+
+  const { data: categories, loading: categoriesLoading } = useRealtimeDataWithDefault<Category[]>(
+    (cb) => categoriesService.subscribeAll(cb),
+    [],
+    []
+  );
+
+  const loading = productsLoading || categoriesLoading;
 
   // Handle category from query param if any
   const searchParams = new URLSearchParams(window.location.search);
@@ -30,24 +43,6 @@ export default function Shop() {
       setCategoryFilter(queryCategory);
     }
   }, [queryCategory]);
-
-  useEffect(() => {
-    async function loadShopData() {
-      try {
-        const [prodList, catList] = await Promise.all([
-          productsService.getAll(),
-          categoriesService.getAll(),
-        ]);
-        setProducts(prodList);
-        setCategories(catList);
-      } catch (err) {
-        console.error("Error loading shop data:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadShopData();
-  }, []);
 
   const handleAddToCart = (product: Product, e: React.MouseEvent) => {
     e.preventDefault();

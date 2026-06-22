@@ -1,29 +1,20 @@
-import { useState, useEffect } from "react";
 import { Link } from "wouter";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { collectionsService } from "@/lib/services/collections.service";
 import { useLanguage } from "@/lib/language-context";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
 import type { Collection } from "@/lib/types";
 
 export default function Collections() {
-  const [collections, setCollections] = useState<Collection[]>([]);
-  const [loading, setLoading] = useState(true);
   const { t, dir } = useLanguage();
 
-  useEffect(() => {
-    async function loadCollections() {
-      try {
-        const data = await collectionsService.getAll();
-        setCollections(data);
-      } catch (err) {
-        console.error("Error loading collections:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadCollections();
-  }, []);
+  // Real-time subscription
+  const { data: collections, loading } = useRealtimeDataWithDefault<Collection[]>(
+    (cb) => collectionsService.subscribeAll(cb),
+    [],
+    []
+  );
 
   return (
     <div className="min-h-screen pt-24 pb-20" dir={dir}>

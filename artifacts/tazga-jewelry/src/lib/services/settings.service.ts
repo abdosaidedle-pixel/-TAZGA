@@ -5,8 +5,10 @@ import {
   updateDoc,
   arrayUnion,
   arrayRemove,
+  onSnapshot,
+  type Unsubscribe,
 } from 'firebase/firestore';
-import { db, isMockMode } from '../firebase';
+import { db, isMockMode, isFirestoreAvailable } from '../firebase';
 import type { WebsiteSettings, HomepageSettings, AdminSettings } from '../types';
 import { defaultWebsiteSettings, defaultHomepageSettings } from './mockData';
 
@@ -107,5 +109,31 @@ export const settingsService = {
       return;
     }
     await setDoc(doc(db, 'settings', 'admins'), { emails: [email] }, { merge: true });
+  },
+
+  /** Real-time subscription to homepage settings — admin edits appear instantly for all users */
+  subscribeHomepage(callback: (data: Partial<HomepageSettings>) => void): Unsubscribe {
+    if (isMockMode || !isFirestoreAvailable()) {
+      const handler = () => callback(getMockHomepage());
+      handler();
+      window.addEventListener('tazga_mock_db_update', handler);
+      return () => window.removeEventListener('tazga_mock_db_update', handler);
+    }
+    return onSnapshot(doc(db, 'settings', 'homepage'), (snap) => {
+      callback(snap.exists() ? (snap.data() as HomepageSettings) : {});
+    });
+  },
+
+  /** Real-time subscription to website settings */
+  subscribeWebsite(callback: (data: Partial<WebsiteSettings>) => void): Unsubscribe {
+    if (isMockMode || !isFirestoreAvailable()) {
+      const handler = () => callback(getMockWebsite());
+      handler();
+      window.addEventListener('tazga_mock_db_update', handler);
+      return () => window.removeEventListener('tazga_mock_db_update', handler);
+    }
+    return onSnapshot(doc(db, 'settings', 'website'), (snap) => {
+      callback(snap.exists() ? (snap.data() as WebsiteSettings) : {});
+    });
   },
 };

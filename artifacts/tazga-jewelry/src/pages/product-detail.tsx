@@ -7,39 +7,43 @@ import { useToast } from "@/hooks/use-toast";
 import { useCart } from "@/lib/cart-context";
 import { useLanguage } from "@/lib/language-context";
 import { productsService } from "@/lib/services/products.service";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
 import type { Product } from "@/lib/types";
 
 export default function ProductDetail() {
   const { slug } = useParams<{ slug: string }>();
   const [activeImage, setActiveImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
-  const [product, setProduct] = useState<Product | null>(null);
-  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const { t, dir } = useLanguage();
 
   const { addToCart, addToWishlist, isInWishlist, removeFromWishlist } = useCart();
 
+  // ─── Real-time subscriptions ───
+  const { data: allProducts, loading } = useRealtimeDataWithDefault<Product[]>(
+    (cb) => productsService.subscribeAll(cb),
+    [],
+    []
+  );
+
+  const product = allProducts.find((p) => p.slug === slug) || null;
+  const relatedProducts = product
+    ? allProducts
+        .filter((p) => p.categoryId === product.categoryId && p.id !== product.id)
+        .slice(0, 4)
+    : [];
+
+  // Reset image index when product changes
   useEffect(() => {
-    async function loadProductData() {
-      setLoading(true);
-      try {
-        const prod = await productsService.getBySlug(slug);
-        setProduct(prod);
-        if (prod) {
-          // Fetch products in the same category
-          const allProds = await productsService.getAll({ categoryId: prod.categoryId });
-          setRelatedProducts(allProds.filter(p => p.id !== prod.id).slice(0, 4));
-        }
-      } catch (err) {
-        console.error("Error loading product detail from Firebase:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadProductData();
+    setActiveImage(0);
+    setQuantity(1);
+    window.scrollTo(0, 0);
   }, [slug]);
+
+  // Reset image index when product loads
+  useEffect(() => {
+    setActiveImage(0);
+  }, [product?.id]);
 
   const handleAddToCart = () => {
     if (!product) return;
