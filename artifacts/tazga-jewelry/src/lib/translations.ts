@@ -271,11 +271,32 @@ export const translations = {
   },
 
   // ─── About ──────────────────────────────────────────────────────────
-  "about.title": { ar: "إرثنا", en: "OUR HERITAGE" },
+  "about.title": { ar: "من نحن", en: "ABOUT US" },
   "about.tagline": {
     ar: "تازجا.. إرث من الحرفية والإبداع يمتد منذ عام ١٩٣٠",
     en: "TAZGA.. A legacy of craftsmanship and creativity since 1930",
   },
+
+  // ─── Our Story (3-generation family narrative) ─────────────────────
+  "about.story_eyebrow": { ar: "قصتنا", en: "OUR STORY" },
+  "about.story_p1": {
+    ar: "بدأت الرحلة في ثلاثينيات القرن الماضي مع السيد جلال، رجل آمن بأن قيمة الإنسان الحقيقية تتجلى في عمل يديه، وأن المعدن يمكن أن يتحول إلى فنٍّ خالد يبقى بعد صانعه.",
+    en: "The journey began in the 1930s with Mr. Galal, a man who believed that the true value of a person is reflected in the work of their hands, and that metal can be transformed into timeless art beyond its maker's life.",
+  },
+  "about.story_p2": {
+    ar: "بعد عقود، حملت حفيدته هبة هذا الإرث إلى الأمام، مؤسسةً تازجا للمجوهرات كعلامة تجارية تربط بين أصالة الحرفية المصرية وروح التصميم العصري.",
+    en: "Decades later, his granddaughter Heba carried that legacy forward, founding TAZGA Jewelry as a brand that bridges the authenticity of Egyptian craftsmanship with the spirit of modern design.",
+  },
+  "about.story_p3": {
+    ar: "اليوم، يواصل أبناؤها — رامز، رزان، رعد، ورغد — كتابة الفصل التالي، جاعلين من تازجا للمجوهرات إرثاً حياً من العائلة والإبداع والأناقة الخالدة.",
+    en: "Today, her children — Ramez, Razan, Raed, and Raghad — continue writing the next chapter, making TAZGA Jewelry a living heritage of family, creativity, and timeless elegance.",
+  },
+  "about.story_signature": {
+    ar: "تازجا للمجوهرات... من السيد جلال إلى هبة، إلى رامز، رزان، رعد، ورغد.",
+    en: "TAZGA Jewelry... from Mr. Galal to Heba, to Ramez, Razan, Raed, and Raghad.",
+  },
+
+  // ─── Heritage intro (kept for legacy SEO) ──────────────────────────
   "about.intro_1": {
     ar: "تازجا للمجوهرات (هبة جبلي للمجوهرات) علامة مصرية فاخرة مصنوعة يدوياً، متجذرة بعمق في الحضارة المصرية القديمة والتراث الفني الشرقي.",
     en: "TAZGA Jewelry (Hiba Gebali for Jewelry) is an Egyptian luxury handmade brand deeply rooted in Ancient Egyptian civilization and Oriental artistic heritage.",
@@ -284,6 +305,8 @@ export const translations = {
     ar: "منذ أكثر من تسعة عقود، نصوغ قطعاً خالدة تتجاوز صيحات الموضة، نقدم لعملائنا ليس مجرد مجوهرات، بل فناً قابلاً للارتداء يحمل هوية ثقافية عميقة.",
     en: "For over nine decades, we have been crafting timeless pieces that transcend fashion trends, offering our clients not just jewelry, but wearable art that carries a profound cultural identity.",
   },
+
+  // ─── Workshop ──────────────────────────────────────────────────────
   "about.workshop_title": { ar: "الورشة", en: "THE WORKSHOP" },
   "about.workshop_p1": {
     ar: "كل قطعة من تازجا تبدأ رحلتها في ورشتنا بالقاهرة. هنا، يستخدم أمهر الحرفيين تقنيات متوارثة عبر الأجيال، ليعطوا الحياة لتصاميم مستوحاة من تاريخنا العريق.",
@@ -297,6 +320,71 @@ export const translations = {
     ar: "كل قطعة من مجوهرات تازجا تبدأ رحلتها في ورشتنا بالقاهرة. هنا، يستخدم أمهر الحرفيين تقنيات متوارثة عبر الأجيال، ليعطوا الحياة لتصاميم مستوحاة من تاريخنا العريق.",
     en: "كل قطعة من مجوهرات تازجا تبدأ رحلتها في ورشتنا بالقاهرة. هنا، يستخدم أمهر الحرفيين تقنيات متوارثة عبر الأجيال، ليعطوا الحياة لتصاميم مستوحاة من تاريخنا العريق.",
   },
+
+  // ─── About Our Products (new section from screenshot) ──────────────
+  "about.products_eyebrow": { ar: "عن منتجاتنا", en: "OUR PRODUCTS" },
+  "about.products_title": { ar: "عن منتجاتنا", en: "About Our Products" },
+  "about.products_intro": {
+    ar: "مجوهراتنا أكثر من مجرد زينة... إنها قصص مصاغة من الفضة، والنحاس المطلي بالذهب، والنحاس المطلي بالفضة. كل قطعة تحمل لمسة حرفيٍّ متفانٍ وتصميماً يعكس روح صاحبها، لتصبح شاهدةً على لحظات لا تُنسى.",
+    en: "Our jewelry is more than adornment... It is stories crafted in silver, gold-plated copper, and silver-plated copper. Each piece carries the touch of a devoted artisan and a design that reflects the soul of its wearer, becoming a witness to unforgettable moments.",
+  },
+  "about.products_outro": {
+    ar: "إنها إبداعات تجسّد الأناقة، وتلتقط روح مصر، ومن قلبها تلهم العالم.",
+    en: "They are creations that embody elegance, capture the spirit of Egypt, and from its heart, inspire the world.",
+  },
+
+  "about.products.excellence_title": {
+    ar: "مصنوعة بإتقان",
+    en: "Crafted with Excellence",
+  },
+  "about.products.excellence_1": {
+    ar: "إتقان ودقة في كل تفصيلة مصنوعة يدوياً.",
+    en: "Excellence and precision in every handcrafted detail.",
+  },
+  "about.products.excellence_2": {
+    ar: "التزام بالجودة يعكس رؤيتك الفريدة.",
+    en: "A commitment to quality that reflects your unique vision.",
+  },
+  "about.products.moments_title": {
+    ar: "مصنوعة لتخلّد أثمن لحظات الحياة",
+    en: "Crafted to capture life's most cherished moments.",
+  },
+  "about.products.moments_1": {
+    ar: "مجوهرات تحتفي بلحظات الحياة.",
+    en: "Jewelry that celebrates life's moments.",
+  },
+  "about.products.moments_2": {
+    ar: "قطع تجعل كل مناسبة لا تُنسى.",
+    en: "Pieces that make every occasion unforgettable.",
+  },
+
+  // ─── Arabic-only "من نحن" content (used when lang = ar) ────────────
+  "about.ar_about_p1": {
+    ar: "تعتبر تازجا للمجوهرات من أرقى وأشهر المحلات التي تقدم أفضل أنواع المجوهرات والأحجار الكريمة، حيث نحرص دائماً على توفير أجود المنتجات بأعلى جودة وأفضل الأسعار.",
+    en: "TAZGA Jewelry is among the finest and most renowned boutiques offering the best types of jewelry and precious stones, always keen to provide the finest products with the highest quality and best prices.",
+  },
+  "about.ar_about_p2": {
+    ar: "نحن في تازجا للمجوهرات نؤمن بأن العميل هو محور كل ما نقدمه، لذلك نسعى جاهدين لتقديم خدمة مميزة تليق بمكانة العميل.",
+    en: "At TAZGA Jewelry we believe the client is the center of everything we offer, so we strive to deliver a distinctive service worthy of our clients.",
+  },
+  "about.ar_about_p3": {
+    ar: "تتميز منتجاتنا بجمال التصميم وروعة الجودة، مما يجعلها الخيار الأمثل لكل من يبحث عن التميز والجودة.",
+    en: "Our products are distinguished by beautiful design and magnificent quality, making them the ideal choice for anyone seeking distinction and quality.",
+  },
+  "about.ar_about_p4": {
+    ar: "تازجا للمجوهرات هي علامة تجارية رائدة في عالم المجوهرات والأحجار الكريمة، وتقدم تشكيلة واسعة من المنتجات التي تلبي جميع الأذواق والاحتياجات.",
+    en: "TAZGA Jewelry is a leading brand in the world of jewelry and precious stones, offering a wide range of products that meet all tastes and needs.",
+  },
+  "about.ar_about_p5": {
+    ar: "نحن في تازجا للمجوهرات نؤمن بأن الجودة هي أساس النجاح، لذلك نحرص على توفير منتجاتنا بأعلى معايير الجودة.",
+    en: "At TAZGA Jewelry we believe quality is the foundation of success, so we ensure our products meet the highest quality standards.",
+  },
+  "about.ar_about_p6": {
+    ar: "تازجا للمجوهرات هي وجهتك الأولى للحصول على أفضل المجوهرات والأحجار الكريمة.",
+    en: "TAZGA Jewelry is your first destination for the best jewelry and precious stones.",
+  },
+
+  // ─── Features (legacy) ─────────────────────────────────────────────
   "about.feature_1_title": { ar: "الهوية الثقافية", en: "CULTURAL IDENTITY" },
   "about.feature_1_desc": {
     ar: "تصاميم تردد عظمة مصر القديمة وجمال الفن الشرقي.",
