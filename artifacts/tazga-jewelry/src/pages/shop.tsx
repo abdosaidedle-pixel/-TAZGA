@@ -123,6 +123,74 @@ export default function Shop() {
           </div>
         </div>
 
+        {/* ─── Shop by Category grid (new) ─── */}
+        {!categoryFilter && !search && (
+          <section className="mb-16">
+            <div className="text-center mb-10">
+              <p className="text-xs tracking-[0.3em] uppercase text-primary font-serif mb-3">
+                {lang === "ar" ? "تصفح" : "EXPLORE"}
+              </p>
+              <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl tracking-wider mb-3">
+                {t("shop.categories_title")}
+              </h2>
+              <div className="w-12 h-[1px] bg-primary mx-auto mb-4"></div>
+              <p className="text-muted-foreground text-sm sm:text-base max-w-xl mx-auto">
+                {t("shop.categories_subtitle")}
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4">
+              {categories.map((cat, idx) => (
+                <motion.button
+                  key={cat.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: idx * 0.05 }}
+                  onClick={() => setCategoryFilter(cat.slug)}
+                  className="group relative aspect-[3/4] overflow-hidden border border-border bg-secondary text-right rtl:text-left"
+                >
+                  {cat.coverImage ? (
+                    <img
+                      src={cat.coverImage}
+                      alt={lang === "ar" ? (cat.nameAr || cat.name) : cat.name}
+                      loading="lazy"
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 opacity-80 group-hover:opacity-100"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-primary font-serif text-4xl">
+                      {(lang === "ar" ? (cat.nameAr || cat.name) : cat.name)[0]}
+                    </div>
+                  )}
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/30 to-transparent" />
+                  <div className="absolute bottom-0 w-full p-3 sm:p-4 text-center">
+                    <h3 className="font-serif text-sm sm:text-base md:text-lg tracking-wider text-foreground">
+                      {lang === "ar" ? (cat.nameAr || cat.name) : cat.name}
+                    </h3>
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-[0.25em] text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 mt-1 inline-block">
+                      {lang === "ar" ? "اكتشف" : "Discover"}
+                    </span>
+                  </div>
+                </motion.button>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* ─── Active category title ─── */}
+        {categoryFilter && (
+          <div className="mb-8 text-center">
+            <p className="text-xs tracking-[0.3em] uppercase text-primary font-serif mb-2">
+              {lang === "ar" ? "تصفح" : "BROWSING"}
+            </p>
+            <h2 className="font-serif text-2xl sm:text-3xl tracking-wider">
+              {(() => {
+                const cat = categories.find(c => c.slug === categoryFilter);
+                return cat ? (lang === "ar" ? (cat.nameAr || cat.name) : cat.name) : t("shop.title");
+              })()}
+            </h2>
+          </div>
+        )}
+
         {loading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (

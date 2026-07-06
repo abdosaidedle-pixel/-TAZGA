@@ -6,13 +6,39 @@ import { useCart } from "@/lib/cart-context";
 import { useLanguage } from "@/lib/language-context";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SocialIcons } from "@/components/social-icons";
+import { BrandLogo } from "@/components/brand-logo";
+import { useRealtimeDataWithDefault } from "@/hooks/use-realtime-data";
+import { categoriesService } from "@/lib/services/categories.service";
+import type { Category } from "@/lib/types";
+
+// Category slug → translation key map (for the categories dropdown)
+const CATEGORY_TRANSLATION_KEYS: Record<string, string> = {
+  rings: "category.rings",
+  earrings: "category.earrings",
+  necklaces: "category.necklaces",
+  bracelets: "category.bracelets",
+  anklets: "category.anklets",
+  pendants: "category.pendants",
+  sets: "category.sets",
+  boutonnieres: "category.boutonnieres",
+  medals: "category.medals",
+  others: "category.others",
+};
 
 export function StoreLayout({ children }: { children: React.ReactNode }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [categoriesOpen, setCategoriesOpen] = useState(false);
   const [location] = useLocation();
   const { cart, wishlist } = useCart();
   const { lang, toggleLanguage, t, dir } = useLanguage();
+
+  // Real-time categories from Firestore (or mock data)
+  const { data: categories } = useRealtimeDataWithDefault<Category[]>(
+    (cb) => categoriesService.subscribeAll(cb),
+    [],
+    []
+  );
 
   const cartCount = cart.reduce((acc, item) => acc + item.quantity, 0);
   const wishlistCount = wishlist.length;
@@ -24,6 +50,12 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Close dropdowns on location change
+  useEffect(() => {
+    setCategoriesOpen(false);
+    setMobileMenuOpen(false);
+  }, [location]);
 
   const navLinks = [
     { nameKey: "nav.shop", href: "/shop" },
@@ -53,6 +85,13 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
     return () => clearInterval(id);
   }, [announcements.length]);
 
+  // Helper to translate a category name
+  const getCategoryName = (cat: Category): string => {
+    const key = CATEGORY_TRANSLATION_KEYS[cat.slug];
+    if (key) return t(key);
+    return lang === "ar" ? (cat.nameAr || cat.name) : cat.name;
+  };
+
   return (
     <div className="min-h-screen flex flex-col font-sans bg-background text-foreground" dir={dir}>
       {/* ─── ANNOUNCEMENT BAR ─── */}
@@ -78,6 +117,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             ? "bg-background/95 backdrop-blur-md border-b border-border py-2 sm:py-3 shadow-sm"
             : "bg-background border-b border-border py-3 sm:py-4"
         }`}
+        onMouseLeave={() => setCategoriesOpen(false)}
       >
         <div className="container mx-auto px-3 sm:px-4 md:px-8 flex items-center justify-between gap-2 sm:gap-3">
           {/* LEFT — mobile hamburger + desktop nav */}
@@ -90,37 +130,113 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
               <Menu className="h-5 w-5 sm:h-6 sm:w-6" />
             </button>
             <nav className="hidden md:flex items-center gap-4 lg:gap-8">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`text-[10px] sm:text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 relative group ${
-                    location === link.href
-                      ? "text-primary"
-                      : "text-foreground/80 hover:text-primary"
-                  }`}
-                >
-                  {t(link.nameKey)}
-                  <span
-                    className={`absolute -bottom-1 left-0 h-[1px] bg-primary transition-all duration-300 ${
-                      location === link.href ? "w-full" : "w-0 group-hover:w-full"
-                    }`}
-                  />
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive = location === link.href;
+                const isShopLink = link.href === "/shop";
+                return (
+                  <div
+                    key={link.href}
+                    className="relative"
+                    onMouseEnter={() => isShopLink && setCategoriesOpen(true)}
+                  >
+                    <Link
+                      href={link.href}
+                      className={`text-[10px] sm:text-xs tracking-[0.2em] uppercase font-serif transition-colors duration-300 relative group flex items-center gap-1 ${
+                        isActive
+                          ? "text-primary"
+                          : "text-foreground/80 hover:text-primary"
+                      }`}
+                    >
+                      {t(link.nameKey)}
+                      {isShopLink && (
+                        <ChevronDown
+                          className={`h-3 w-3 transition-transform duration-300 ${
+                            categoriesOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      )}
+                      <span
+                        className={`absolute -bottom-1 left-0 h-[1px] bg-primary transition-all duration-300 ${
+                          isActive ? "w-full" : "w-0 group-hover:w-full"
+                        }`}
+                      />
+                    </Link>
+
+                    {/* Categories dropdown — appears on hover over SHOP */}
+                    {isShopLink && (
+                      <AnimatePresence>
+                        {categoriesOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="absolute top-full mt-2 left-1/2 -translate-x-1/2 min-w-[640px] bg-card border border-border shadow-2xl p-6"
+                          >
+                            <div className="grid grid-cols-3 gap-4">
+                              <Link
+                                href="/shop"
+                                className="flex flex-col items-center gap-2 p-3 hover:bg-secondary transition-colors text-center group"
+                              >
+                                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center text-primary font-serif font-bold group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                                  ★
+                                </div>
+                                <span className="text-xs font-serif tracking-wider uppercase">
+                                  {t("category.all")}
+                                </span>
+                              </Link>
+                              {categories.map((cat) => (
+                                <Link
+                                  key={cat.id}
+                                  href={`/shop?category=${cat.slug}`}
+                                  className="flex flex-col items-center gap-2 p-3 hover:bg-secondary transition-colors text-center group"
+                                >
+                                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center overflow-hidden group-hover:bg-primary/20 transition-colors">
+                                    {cat.coverImage ? (
+                                      <img
+                                        src={cat.coverImage}
+                                        alt={getCategoryName(cat)}
+                                        loading="lazy"
+                                        className="w-full h-full object-cover"
+                                      />
+                                    ) : (
+                                      <span className="text-primary font-serif text-lg">
+                                        {getCategoryName(cat)[0]}
+                                      </span>
+                                    )}
+                                  </div>
+                                  <span className="text-xs font-serif tracking-wider uppercase">
+                                    {getCategoryName(cat)}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
+                  </div>
+                );
+              })}
             </nav>
           </div>
 
-          {/* CENTER — Logo (Azza Fahmy style: centered, serif, refined) */}
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center group">
-            <div className="header-logo font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.25em] sm:tracking-[0.35em] font-bold text-foreground group-hover:text-primary transition-colors duration-500">
-              TAZGA
-            </div>
-            <div
-              className="font-arabic text-[8px] sm:text-[9px] text-primary mt-0.5 tracking-[0.25em] sm:tracking-[0.3em] uppercase"
-              dir="rtl"
-            >
-              {t("brand.tagline")}
+          {/* CENTER — Logo + Brand Name + Owner Name */}
+          <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center group flex flex-col items-center">
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Brand logo icon */}
+              <BrandLogo className="h-7 w-7 sm:h-9 sm:w-9 text-primary transition-transform duration-500 group-hover:rotate-12" />
+              <div className="text-left rtl:text-right">
+                <div className="header-logo font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.2em] sm:tracking-[0.3em] font-bold text-foreground group-hover:text-primary transition-colors duration-500 leading-none">
+                  TAZGA
+                </div>
+                <div
+                  className="text-[7px] sm:text-[8px] text-primary mt-1 tracking-[0.2em] sm:tracking-[0.3em] uppercase font-serif"
+                  dir={dir}
+                >
+                  {t("brand.tagline")}
+                </div>
+              </div>
             </div>
           </Link>
 
@@ -186,11 +302,14 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             className="fixed inset-0 z-[60] bg-background/98 backdrop-blur-xl p-6 sm:p-8 overflow-y-auto"
             dir={dir}
           >
-            <div className="flex justify-between items-center mb-10">
-              <div>
-                <div className="font-serif text-2xl tracking-[0.35em] font-bold">TAZGA</div>
-                <div className="font-arabic text-xs text-primary mt-1 tracking-widest" dir="rtl">
-                  {t("brand.tagline")}
+            <div className="flex justify-between items-center mb-8">
+              <div className="flex items-center gap-3">
+                <BrandLogo className="h-9 w-9 text-primary" />
+                <div>
+                  <div className="font-serif text-2xl tracking-[0.3em] font-bold">TAZGA</div>
+                  <div className="font-arabic text-xs text-primary mt-1 tracking-widest" dir="rtl">
+                    {t("brand.tagline")}
+                  </div>
                 </div>
               </div>
               <button
@@ -202,7 +321,8 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
               </button>
             </div>
 
-            <nav className="flex flex-col gap-5 mb-10">
+            {/* Main nav */}
+            <nav className="flex flex-col gap-4 mb-8">
               {navLinks.map((link, i) => (
                 <motion.div
                   key={link.href}
@@ -212,8 +332,7 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
                 >
                   <Link
                     href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="text-2xl font-serif tracking-[0.15em] hover:text-primary transition-colors block uppercase"
+                    className="text-xl font-serif tracking-[0.15em] hover:text-primary transition-colors block uppercase"
                   >
                     {t(link.nameKey)}
                   </Link>
@@ -221,8 +340,32 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
               ))}
             </nav>
 
+            {/* Categories in mobile menu */}
+            <div className="mb-8 pb-8 border-b border-border">
+              <p className="text-xs uppercase tracking-widest font-serif text-muted-foreground mb-4">
+                {t("shop.categories_title")}
+              </p>
+              <div className="grid grid-cols-2 gap-3">
+                <Link
+                  href="/shop"
+                  className="text-sm font-serif tracking-wide hover:text-primary transition-colors py-2"
+                >
+                  {t("category.all")}
+                </Link>
+                {categories.map((cat) => (
+                  <Link
+                    key={cat.id}
+                    href={`/shop?category=${cat.slug}`}
+                    className="text-sm font-serif tracking-wide hover:text-primary transition-colors py-2"
+                  >
+                    {getCategoryName(cat)}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
             {/* Mobile controls */}
-            <div className="flex flex-col gap-4 mb-10 pb-10 border-b border-border">
+            <div className="flex flex-col gap-4 mb-8 pb-8 border-b border-border">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-widest font-serif text-muted-foreground">
                   {t("theme.toggle")}
@@ -259,12 +402,18 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
         <div className="container mx-auto px-4 md:px-8 relative z-10">
           <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-8 sm:gap-10 mb-10 sm:mb-12 md:mb-16">
             <div className="col-span-2 sm:col-span-2 md:col-span-2">
-              <h3 className="font-serif text-xl sm:text-2xl tracking-[0.25em] sm:tracking-[0.35em] mb-2 text-secondary-foreground">
-                TAZGA
-              </h3>
-              <p className="font-arabic text-xs sm:text-sm text-primary mb-3 sm:mb-4" dir="rtl">
-                {t("brand.tagline")}
-              </p>
+              {/* Brand logo + name in footer */}
+              <div className="flex items-center gap-3 mb-3">
+                <BrandLogo className="h-10 w-10 text-primary" />
+                <div>
+                  <h3 className="font-serif text-xl sm:text-2xl tracking-[0.25em] sm:tracking-[0.35em] text-secondary-foreground leading-none">
+                    TAZGA
+                  </h3>
+                  <p className="font-arabic text-xs sm:text-sm text-primary mt-2" dir="rtl">
+                    {t("brand.tagline")}
+                  </p>
+                </div>
+              </div>
               <p className="text-secondary-foreground/80 max-w-sm font-light leading-relaxed text-xs sm:text-sm">
                 {t("footer.about")}
               </p>

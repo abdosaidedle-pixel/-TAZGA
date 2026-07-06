@@ -14,8 +14,28 @@ export const translations = {
   // ─── Brand ───────────────────────────────────────────────────────────
   "brand.name": { ar: "تازجا", en: "TAZGA" },
   "brand.tagline": {
-    ar: "هبة جبلي للحلي والمجوهرات",
-    en: "Hiba Gebali for Jewelry",
+    ar: "هبه جلال للمجوهرات",
+    en: "HIBA GALAL FOR JEWELRY",
+  },
+  "brand.owner": { ar: "هبه جلال", en: "Hiba Galal" },
+
+  // ─── Jewelry Categories (الخواتم، الحلقان، السلاسل، إلخ) ──────────
+  "category.rings": { ar: "خواتم", en: "Rings" },
+  "category.earrings": { ar: "حلقان", en: "Earrings" },
+  "category.necklaces": { ar: "سلاسل", en: "Necklaces" },
+  "category.bracelets": { ar: "أساور", en: "Bracelets" },
+  "category.anklets": { ar: "خلخال", en: "Anklets" },
+  "category.pendants": { ar: "انسيال", en: "Pendants" },
+  "category.sets": { ar: "أطقم", en: "Sets" },
+  "category.boutonnieres": { ar: "بروش بدلة", en: "Boutonnieres" },
+  "category.medals": { ar: "ميدليات", en: "Medals" },
+  "category.others": { ar: "أخرى", en: "Others" },
+  "category.all": { ar: "الكل", en: "All" },
+
+  "shop.categories_title": { ar: "تسوق حسب الفئة", en: "Shop by Category" },
+  "shop.categories_subtitle": {
+    ar: "اكتشف تشكيلتنا الفاخرة من المجوهرات المصنوعة يدوياً",
+    en: "Discover our luxurious handcrafted jewelry collection",
   },
 
   // ─── Navigation ──────────────────────────────────────────────────────
