@@ -516,11 +516,11 @@ img[loading="lazy"] {
 /* ─── TYPOGRAPHY SCALE ───────────────────────────────────────────── */
 /* Mobile-first: smaller text on phones, scales up with breakpoints */
 @media (max-width: 480px) {
-  h1 { font-size: 2rem !important; line-height: 1.15 !important; }
-  h2 { font-size: 1.5rem !important; line-height: 1.2 !important; }
-  h3 { font-size: 1.125rem !important; }
-  h4 { font-size: 1rem !important; }
-  p  { font-size: 0.875rem !important; }
+  h1 { font-size: 1.75rem !important; line-height: 1.15 !important; }
+  h2 { font-size: 1.375rem !important; line-height: 1.2 !important; }
+  h3 { font-size: 1.0625rem !important; }
+  h4 { font-size: 0.9375rem !important; }
+  p  { font-size: 0.8125rem !important; }
 
   .container { padding-left: 1rem !important; padding-right: 1rem !important; }
 
@@ -528,10 +528,10 @@ img[loading="lazy"] {
   section.relative.min-h-\[100dvh\],
   section.relative.h-\[80vh\],
   section.relative.h-\[88vh\] {
-    min-height: 70vh !important;
+    min-height: 60vh !important;
     height: auto !important;
-    padding-top: 5rem !important;
-    padding-bottom: 5rem !important;
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
   }
 
   /* Trust bar wrap nicer */
@@ -539,10 +539,47 @@ img[loading="lazy"] {
   .trust-bar-item span { font-size: 9px !important; }
 
   /* Hero slideshow content */
-  .hero-title { font-size: 2.25rem !important; line-height: 1.1 !important; }
+  .hero-title { font-size: 1.875rem !important; line-height: 1.1 !important; }
 
   /* Product card */
   .product-card-image { aspect-ratio: 3/4 !important; }
+
+  /* Fix product images to maintain aspect ratio on tiny screens */
+  .aspect-\[3\/4\] > img { object-fit: cover !important; object-position: center !important; }
+}
+
+/* ─── IMAGE RESPONSIVENESS FIX (mobile) ──────────────────────────── */
+@media (max-width: 640px) {
+  /* Ensure all images in aspect containers don't overflow */
+  .aspect-\[3\/4\],
+  .aspect-\[4\/5\],
+  .aspect-\[16\/9\],
+  .aspect-\[16\/10\],
+  .aspect-\[4\/3\] {
+    overflow: hidden;
+  }
+
+  /* Product card images: keep them contained */
+  .group .aspect-\[3\/4\] > img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+  }
+
+  /* Hero slideshow images */
+  section img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Cart item images */
+  .cart-item-image {
+    width: 5rem !important;
+    height: 6.25rem !important;
+  }
+
+  /* Admin dashboard cards: stack nicely */
+  .admin-content { padding: 1rem !important; }
 }
 
 /* Small phones (481px – 640px) */

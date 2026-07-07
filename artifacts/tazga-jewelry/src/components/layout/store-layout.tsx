@@ -223,14 +223,17 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
 
           {/* CENTER — Logo (Hiba Galal brand logo) + Brand Name */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2 text-center group flex items-center gap-2 sm:gap-3">
-            {/* Brand logo image (square, contains calligraphic symbol + TAZGA text) */}
-            <img
-              src="/logo-hiba-galal.jpg"
-              alt="TAZGA Jewelry — Hiba Galal"
-              className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 object-contain rounded-sm transition-transform duration-500 group-hover:scale-110"
-              loading="eager"
-              fetchPriority="high"
-            />
+            {/* Brand logo image (square, contains calligraphic symbol + TAZGA text).
+                Background added so the dark logo stays visible on light themes too. */}
+            <div className="relative h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-sm overflow-hidden bg-secondary border border-border flex-shrink-0 transition-transform duration-500 group-hover:scale-110">
+              <img
+                src="/logo-hiba-galal.jpg"
+                alt="TAZGA Jewelry — Hiba Galal"
+                className="absolute inset-0 w-full h-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+              />
+            </div>
             <div className="text-left rtl:text-right">
               <div className="header-logo font-serif text-xl sm:text-2xl md:text-3xl tracking-[0.2em] sm:tracking-[0.3em] font-bold text-foreground group-hover:text-primary transition-colors duration-500 leading-none">
                 TAZGA
@@ -308,12 +311,14 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
           >
             <div className="flex justify-between items-center mb-8">
               <div className="flex items-center gap-3">
-                <img
-                  src="/logo-hiba-galal.jpg"
-                  alt="TAZGA Jewelry — Hiba Galal"
-                  className="h-12 w-12 sm:h-14 sm:w-14 object-contain rounded-sm"
-                  loading="eager"
-                />
+                <div className="relative h-12 w-12 sm:h-14 sm:w-14 rounded-sm overflow-hidden bg-secondary border border-border flex-shrink-0">
+                  <img
+                    src="/logo-hiba-galal.jpg"
+                    alt="TAZGA Jewelry — Hiba Galal"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="eager"
+                  />
+                </div>
                 <div>
                   <div className="font-serif text-2xl tracking-[0.3em] font-bold">TAZGA</div>
                   <div className="font-arabic text-xs text-primary mt-1 tracking-widest" dir="rtl">
@@ -413,12 +418,14 @@ export function StoreLayout({ children }: { children: React.ReactNode }) {
             <div className="col-span-2 sm:col-span-2 md:col-span-2">
               {/* Brand logo + name in footer */}
               <div className="flex items-center gap-3 mb-3">
-                <img
-                  src="/logo-hiba-galal.jpg"
-                  alt="TAZGA Jewelry — Hiba Galal"
-                  className="h-14 w-14 sm:h-16 sm:w-16 object-contain rounded-sm"
-                  loading="eager"
-                />
+                <div className="relative h-14 w-14 sm:h-16 sm:w-16 rounded-sm overflow-hidden bg-background border border-border flex-shrink-0">
+                  <img
+                    src="/logo-hiba-galal.jpg"
+                    alt="TAZGA Jewelry — Hiba Galal"
+                    className="absolute inset-0 w-full h-full object-cover"
+                    loading="eager"
+                  />
+                </div>
                 <div>
                   <h3 className="font-serif text-xl sm:text-2xl tracking-[0.25em] sm:tracking-[0.35em] text-secondary-foreground leading-none">
                     TAZGA
