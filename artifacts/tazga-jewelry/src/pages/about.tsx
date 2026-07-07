@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useLanguage } from "@/lib/language-context";
+import { BrandLogo } from "@/components/brand-logo";
 import { Check } from "lucide-react";
 
 export default function About() {
@@ -14,14 +15,7 @@ export default function About() {
         <div className="max-w-4xl mx-auto text-center mb-20 sm:mb-24">
           {/* Brand logo */}
           <div className="flex justify-center mb-6">
-            <div className="relative h-24 w-24 sm:h-32 sm:w-32 rounded-sm overflow-hidden bg-secondary border border-border">
-              <img
-                src="/logo-hiba-galal.jpg"
-                alt="TAZGA Jewelry — Hiba Galal"
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="eager"
-              />
-            </div>
+            <BrandLogo className="h-24 w-24 sm:h-32 sm:w-32" />
           </div>
           <p className="text-xs tracking-[0.3em] uppercase text-primary font-serif mb-3">
             {isAr ? "تازجا للمجوهرات" : "TAZGA Jewelry"}
