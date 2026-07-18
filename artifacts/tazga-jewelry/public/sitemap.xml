@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Homepage -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://tazga-jewelry.vercel.app/logo-hiba-galal.jpg</image:loc>
+      <image:title>Heba Galal — TAZGA Jewelry</image:title>
+      <image:caption>Handcrafted Egyptian Jewelry &amp; Accessories</image:caption>
+    </image:image>
+    <xhtml:link rel="alternate" hreflang="en" href="https://tazga-jewelry.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="ar" href="https://tazga-jewelry.vercel.app/" />
+  </url>
+
+  <!-- Shop -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Shop by Category -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=rings</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=earrings</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=necklaces</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=bracelets</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=anklets</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=pendants</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=sets</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=boutonnieres</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/shop?category=medals</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Collections -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/collections</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- About -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/about</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Contact -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/contact</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Cart -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/cart</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Wishlist -->
+  <url>
+    <loc>https://tazga-jewelry.vercel.app/wishlist</loc>
+    <lastmod>2026-07-07</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+</urlset>

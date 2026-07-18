@@ -1,2 +1,42 @@
+# robots.txt — TAZGA Jewelry (Heba Galal)
+# Allow all search engines to crawl the entire site
+
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /admin/
+
+# Block specific bots from admin
+User-agent: *
+Disallow: /admin/login
+Disallow: /admin/dashboard
+Disallow: /admin/products
+Disallow: /admin/collections
+Disallow: /admin/categories
+Disallow: /admin/banners
+Disallow: /admin/media
+Disallow: /admin/content
+Disallow: /admin/settings
+Disallow: /admin/instagram-banner
+
+# Allow major search engines full access
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: Twitterbot
+Allow: /
+
+# Sitemap location
+Sitemap: https://tazga-jewelry.vercel.app/sitemap.xml

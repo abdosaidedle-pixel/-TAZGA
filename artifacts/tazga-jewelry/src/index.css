@@ -648,7 +648,34 @@ img[loading="lazy"] {
 @media (max-width: 1023px) {
   /* Admin layout: stack sidebar above content */
   .admin-layout-container { flex-direction: column !important; }
-  .admin-content { padding: 1rem !important; }
+  .admin-content { padding: 0.75rem !important; }
+}
+
+@media (max-width: 640px) {
+  /* Admin: smaller padding, full-width cards */
+  .admin-content { padding: 0.5rem !important; }
+
+  /* Admin stat cards: 2 per row on mobile */
+  .admin-content .grid-cols-2,
+  .admin-content .sm\:grid-cols-3,
+  .admin-content .lg\:grid-cols-5 {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  /* Admin cards: less padding */
+  .admin-content [class*="p-4"],
+  .admin-content [class*="p-6"] {
+    padding: 0.75rem !important;
+  }
+
+  /* Admin tables: smaller text */
+  .admin-content table { font-size: 0.75rem !important; }
+  .admin-content th, .admin-content td { padding: 0.5rem !important; }
+
+  /* Admin forms: full-width inputs */
+  .admin-content input,
+  .admin-content textarea,
+  .admin-content select { width: 100% !important; }
 }
 
 /* ─── HEADER ADJUSTMENTS ─────────────────────────────────────────── */
